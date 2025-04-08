@@ -1,6 +1,6 @@
 "use strict";
 const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+// const ctx = canvas.getContext("2d");
 let objs = Array.from(document.body.querySelectorAll("*"));
 window.onload = function () {
   canvas.width = canvas.offsetWidth;
@@ -105,7 +105,7 @@ window.onload = function () {
     else if (zA < zB) return -1;
     else return 0;
   });
-  visualDivide();
+  //   visualDivide();
   canvas.addEventListener("click", (event) => {
     for (let i = 0; i < objs.length; i++) {
       let c = objs[i].tBounds;
@@ -134,7 +134,6 @@ window.onload = function () {
       }
     }
   });
-  console.log(objs);
 };
 function visualDivide() {
   for (let i = 0; i < objs.length; i++) {
