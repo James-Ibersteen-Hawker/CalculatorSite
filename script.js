@@ -31,18 +31,48 @@ window.onload = function () {
       w: objs[i].offsetWidth,
       h: objs[i].offsetHeight,
       e: objs[i],
-      bounds: {
+      tX: objs[i].getBoundingClientRect().left,
+      tY: objs[i].getBoundingClientRect().top,
+      cBounds: {
         tL: {
-          x: this.x,
-          y: this.y,
+          x:
+            objs[i].getBoundingClientRect().left -
+            canvas.getBoundingClientRect().left,
+          y:
+            objs[i].getBoundingClientRect().top -
+            canvas.getBoundingClientRect().top,
         },
         bL: {
-          x: this.x,
-          y: this.y + this.h,
+          x:
+            objs[i].getBoundingClientRect().left -
+            canvas.getBoundingClientRect().left,
+          y:
+            objs[i].getBoundingClientRect().top -
+            canvas.getBoundingClientRect().top +
+            objs[i].offsetHeight,
         },
         tR: {
-          x: this.x + this.w,
-          y: this.y,
+          x:
+            objs[i].getBoundingClientRect().left -
+            canvas.getBoundingClientRect().left +
+            objs[i].offsetWidth,
+          y:
+            objs[i].getBoundingClientRect().top -
+            canvas.getBoundingClientRect().top,
+        },
+      },
+      tBounds: {
+        tL: {
+          x: objs[i].getBoundingClientRect().left,
+          y: objs[i].getBoundingClientRect().top,
+        },
+        bL: {
+          x: objs[i].getBoundingClientRect().left,
+          y: objs[i].getBoundingClientRect().top + objs[i].offsetHeight,
+        },
+        tR: {
+          x: objs[i].getBoundingClientRect().left + objs[i].offsetWidth,
+          y: objs[i].getBoundingClientRect().top,
         },
       },
       init: function () {
@@ -50,10 +80,13 @@ window.onload = function () {
           this.inFunc = function () {
             eval(this.e.getAttribute("onclick"));
           };
-        } else
+          this.hasFunc = true;
+        } else {
           this.inFunc = function () {
-            console.log("no function!");
+            console.log("no function");
           };
+          this.hasFunc = false;
+        }
       },
     };
   }
@@ -72,11 +105,39 @@ window.onload = function () {
     else if (zA < zB) return -1;
     else return 0;
   });
-  divide();
+  visualDivide();
+  canvas.addEventListener("click", (event) => {
+    for (let i = 0; i < objs.length; i++) {
+      let c = objs[i].tBounds;
+      if (event.x >= c.tL.x && event.x <= c.tR.x) {
+        if (event.y >= c.tL.y && event.y <= c.bL.y) {
+          objs[i].inFunc();
+        }
+      }
+    }
+  });
+  canvas.addEventListener("mousemove", (event) => {
+    let count = 0;
+    for (let i = 0; i < objs.length; i++) {
+      let c = objs[i].tBounds;
+      if (event.x >= c.tL.x && event.x <= c.tR.x) {
+        if (event.y >= c.tL.y && event.y <= c.bL.y) {
+          if (objs[i].hasFunc == true) {
+            count++;
+            canvas.classList.add("pointer");
+            objs[i].e.focus();
+          }
+        } else if (count == 0) {
+          canvas.classList.remove("pointer");
+          objs[i].e.blur();
+        }
+      }
+    }
+  });
+  console.log(objs);
 };
-function divide() {
+function visualDivide() {
   for (let i = 0; i < objs.length; i++) {
-    console.log(objs[i]);
     ctx.fillStyle = "rgba(0,0,0,.2)";
     ctx.fillRect(objs[i].x, objs[i].y, objs[i].w, objs[i].h);
     ctx.stroke();
