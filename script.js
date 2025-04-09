@@ -79,6 +79,18 @@ function build() {
       e: objs[i],
       tX: objs[i].getBoundingClientRect().left,
       tY: objs[i].getBoundingClientRect().top,
+      cL: (() => {
+        let CLlist = Array.from(objs[i].classList);
+        for (let q = 0; q < CLlist.length; q++) {
+          if (CLlist[q].includes("_set")) {
+            CLlist = CLlist[q];
+            break;
+          }
+        }
+        CLlist = CLlist.substring(0, 2);
+        alert("here");
+        return CLlist;
+      })(),
       cBounds: {
         tL: {
           x:
