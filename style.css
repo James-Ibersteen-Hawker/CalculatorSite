@@ -37,7 +37,7 @@ main {
   top: 50%;
   left: 50%;
   z-index: 1;
-  transition: 0.5s;
+  transition: 0.2s;
   width: 100px;
   height: 20px;
   background: white;
@@ -47,13 +47,13 @@ main {
   top: 70%;
   left: 50%;
   z-index: 1;
-  transition: 0.5s;
+  transition: 0.2s;
   width: 100px;
   height: 20px;
   background: white;
 }
-button:focus {
-  /* background: red; */
+.focus {
+  background: red;
 }
 .pointer {
   cursor: pointer !important;

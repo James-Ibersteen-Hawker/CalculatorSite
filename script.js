@@ -16,10 +16,8 @@ window.onload = function () {
     }
   });
   canvas.addEventListener("mouseup", () => {
-    alert("here");
     for (let i = 0; i < objs.length; i++) {
-      alert(objs[i].cL);
-      if (objs[i].e.classList.includes(objs[i].cL))
+      if (objs[i].e.classList.contains(objs[i].cL))
         objs[i].e.classList.remove(objs[i].cL);
     }
   });
@@ -30,13 +28,13 @@ window.onload = function () {
         if (event.y >= c.tL.y && event.y <= c.bL.y) {
           if (objs[i].hasFunc == true) {
             canvas.classList.add("pointer");
-            objs[i].e.focus();
+            objs[i].e.classList.add("focus");
             break;
           }
         }
       }
       canvas.classList.remove("pointer");
-      objs[i].e.blur();
+      objs[i].e.classList.remove("focus");
     }
   });
 };
@@ -129,7 +127,8 @@ function build() {
         }
       },
     };
-    get("style").append(`
+    let style = document.createElement("style");
+    style.append(`
       .${objs[i].tagName}${i}_set {
       /*nothing here*/
       }
@@ -160,8 +159,10 @@ function build() {
       })()}
       }
     `);
+    style.id = `_${objs[i].tagName}${i}`;
     temp[i].e.classList.add(`${objs[i].tagName}${i}_set`);
     temp[i].cL = `${objs[i].tagName}${i}_click`;
+    document.head.append(style);
   }
   objs = temp;
   objs.forEach((elem) => elem.init());
@@ -181,6 +182,48 @@ function build() {
   objs.sort(() => {
     return -1;
   });
+  for (let i = 0; i < objs.length; i++) {
+    let config = {
+      attributes: true,
+    };
+    let observer = new MutationObserver(() => {
+      console.log("here", objs[i].cL);
+      get(`#_${objs[i].e.tagName}${i}`).remove();
+      let style = document.createElement("style");
+      style.id = `_${objs[i].e.tagName}${i}`;
+      style.append(`.${objs[i].tagName}${i}_click {
+        background: ${(() => {
+          let d = 100;
+          let styles = window.getComputedStyle(objs[i].e);
+          let bg = styles.getPropertyValue("background");
+          if (bg != "auto") {
+            bg = bg.toString().split(")")[0] + ")";
+            bg = bg.split("");
+            let stylTemp = [];
+            for (let q = 0; q < bg.length; q++) {
+              if (
+                (isNaN(Number(bg[q])) != true && bg[q] != " ") ||
+                bg[q] == ","
+              )
+                stylTemp.push(bg[q]);
+            }
+            stylTemp = stylTemp.join("").split(",");
+            if (stylTemp.length == 3)
+              return `rgb(${stylTemp[0] - d},${stylTemp[1] - d},${
+                stylTemp[2] - d
+              })`;
+            else if (stylTemp.length == 4) {
+              return `rgba(${stylTemp[0] - d},${stylTemp[1] - d},${
+                stylTemp[2] - d
+              }, ${stylTemp[3]})`;
+            }
+          }
+        })()}
+      }
+      `);
+    });
+    observer.observe(objs[i].e, config);
+  }
 }
 function visualDivide() {
   for (let i = 0; i < objs.length; i++) {
@@ -191,7 +234,6 @@ function visualDivide() {
 }
 function test() {
   console.log("testing");
-  // alert("testing!");
 }
 function get(arg) {
   return document.querySelector(arg);
