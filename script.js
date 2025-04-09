@@ -28,13 +28,15 @@ window.onload = function () {
         if (event.y >= c.tL.y && event.y <= c.bL.y) {
           if (objs[i].hasFunc == true) {
             canvas.classList.add("pointer");
-            objs[i].e.classList.add("focus");
+            if (!objs[i].e.classList.contains("focus"))
+              objs[i].e.classList.add("focus");
             break;
           }
         }
       }
       canvas.classList.remove("pointer");
-      objs[i].e.classList.remove("focus");
+      if (objs[i].e.classList.contains("focus"))
+        objs[i].e.classList.remove("focus");
     }
   });
 };
@@ -156,7 +158,7 @@ function build() {
             }, ${stylTemp[3]})`;
           }
         }
-      })()}
+      })()};
       }
     `);
     style.id = `_${objs[i].tagName}${i}`;
@@ -182,47 +184,71 @@ function build() {
   objs.sort(() => {
     return -1;
   });
-  for (let i = 0; i < objs.length; i++) {
+  for (let q = 0; q < objs.length; q++) {
     let config = {
       attributes: true,
     };
     let observer = new MutationObserver(() => {
-      console.log("here", objs[i].cL);
-      get(`#_${objs[i].e.tagName}${i}`).remove();
-      let style = document.createElement("style");
-      style.id = `_${objs[i].e.tagName}${i}`;
-      style.append(`.${objs[i].tagName}${i}_click {
-        background: ${(() => {
-          let d = 100;
-          let styles = window.getComputedStyle(objs[i].e);
-          let bg = styles.getPropertyValue("background");
-          if (bg != "auto") {
-            bg = bg.toString().split(")")[0] + ")";
-            bg = bg.split("");
-            let stylTemp = [];
-            for (let q = 0; q < bg.length; q++) {
-              if (
-                (isNaN(Number(bg[q])) != true && bg[q] != " ") ||
-                bg[q] == ","
-              )
-                stylTemp.push(bg[q]);
-            }
-            stylTemp = stylTemp.join("").split(",");
-            if (stylTemp.length == 3)
-              return `rgb(${stylTemp[0] - d},${stylTemp[1] - d},${
-                stylTemp[2] - d
-              })`;
-            else if (stylTemp.length == 4) {
-              return `rgba(${stylTemp[0] - d},${stylTemp[1] - d},${
-                stylTemp[2] - d
-              }, ${stylTemp[3]})`;
-            }
-          }
-        })()}
+      let i;
+      let classItem;
+      objs[q].e.classList.forEach((elem) => {
+        if (elem.includes("set")) classItem = elem;
+      });
+      for (let k = 0; k < classItem.length; k++) {
+        if (!isNaN(Number(classItem[k]))) i = Number(classItem[k]);
       }
-      `);
+      let elem = get(`.${classItem}`);
+      for (let r = 0; r < objs.length; r++) {
+        if (objs[r].e == elem) {
+          elem = objs[r];
+          break;
+        }
+      }
+      if (get(`#_${elem.e.tagName}${i}`)) {
+        get(`#_${elem.e.tagName}${i}`).remove();
+      }
+      let style = document.createElement("style");
+      style.id = `_${elem.e.tagName}${i}`;
+      style.append(`.${elem.e.tagName}${i}_click {
+          background: ${(() => {
+            let d = 50;
+            let styles = window.getComputedStyle(elem.e);
+            let bg = styles.getPropertyValue("background");
+            if (bg != "auto") {
+              bg = bg.toString().split(")")[0] + ")";
+              bg = bg.split("");
+              let stylTemp = [];
+              for (let q = 0; q < bg.length; q++) {
+                if (
+                  (isNaN(Number(bg[q])) != true && bg[q] != " ") ||
+                  bg[q] == ","
+                )
+                  stylTemp.push(bg[q]);
+              }
+              stylTemp = stylTemp.join("").split(",");
+              let r;
+              let g;
+              let b;
+              let a;
+              if (stylTemp.length == 3) {
+                stylTemp[0] - d < 0 ? (r = 0) : (r = stylTemp[0] - d);
+                stylTemp[1] - d < 0 ? (b = 0) : (g = stylTemp[1] - d);
+                stylTemp[2] - d < 0 ? (g = 0) : (b = stylTemp[2] - d);
+                return `rgb(${r},${g},${b})`;
+              } else if (stylTemp.length == 4) {
+                stylTemp[0] - d < 0 ? (r = 0) : (r = stylTemp[0] - d);
+                stylTemp[1] - d < 0 ? (b = 0) : (g = stylTemp[1] - d);
+                stylTemp[2] - d < 0 ? (g = 0) : (b = stylTemp[2] - d);
+                a = stylTemp[3];
+                return `rgba(${r},${g},${b}, ${a})`;
+              }
+            }
+          })()};
+          }
+        `);
+      document.head.append(style);
     });
-    observer.observe(objs[i].e, config);
+    observer.observe(objs[q].e, config);
   }
 }
 function visualDivide() {
