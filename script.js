@@ -1,8 +1,40 @@
 "use strict";
 const canvas = document.getElementById("canvas");
 // const ctx = canvas.getContext("2d");
-let objs = Array.from(document.body.querySelectorAll("*"));
+let objs;
 window.onload = function () {
+  build();
+  canvas.addEventListener("click", (event) => {
+    for (let i = 0; i < objs.length; i++) {
+      let c = objs[i].tBounds;
+      if (event.x >= c.tL.x && event.x <= c.tR.x) {
+        if (event.y >= c.tL.y && event.y <= c.bL.y) {
+          objs[i].inFunc();
+        }
+      }
+    }
+  });
+  canvas.addEventListener("mousemove", (event) => {
+    for (let i = 0; i < objs.length; i++) {
+      let c = objs[i].tBounds;
+      if (event.x >= c.tL.x && event.x <= c.tR.x) {
+        if (event.y >= c.tL.y && event.y <= c.bL.y) {
+          if (objs[i].hasFunc == true) {
+            canvas.classList.add("pointer");
+            objs[i].e.focus();
+            break;
+          }
+        }
+      }
+      canvas.classList.remove("pointer");
+      objs[i].e.blur();
+    }
+  });
+};
+function build() {
+  objs = Array.from(document.body.querySelectorAll("*"));
+  canvas.removeAttribute("width");
+  canvas.removeAttribute("height");
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
   objs.splice(objs.indexOf(canvas), 1);
@@ -106,35 +138,7 @@ window.onload = function () {
     else return 0;
   });
   //   visualDivide();
-  canvas.addEventListener("click", (event) => {
-    for (let i = 0; i < objs.length; i++) {
-      let c = objs[i].tBounds;
-      if (event.x >= c.tL.x && event.x <= c.tR.x) {
-        if (event.y >= c.tL.y && event.y <= c.bL.y) {
-          objs[i].inFunc();
-        }
-      }
-    }
-  });
-  canvas.addEventListener("mousemove", (event) => {
-    let count = 0;
-    for (let i = 0; i < objs.length; i++) {
-      let c = objs[i].tBounds;
-      if (event.x >= c.tL.x && event.x <= c.tR.x) {
-        if (event.y >= c.tL.y && event.y <= c.bL.y) {
-          if (objs[i].hasFunc == true) {
-            count++;
-            canvas.classList.add("pointer");
-            objs[i].e.focus();
-          }
-        } else if (count == 0) {
-          canvas.classList.remove("pointer");
-          objs[i].e.blur();
-        }
-      }
-    }
-  });
-};
+}
 function visualDivide() {
   for (let i = 0; i < objs.length; i++) {
     ctx.fillStyle = "rgba(0,0,0,.2)";
@@ -145,4 +149,5 @@ function visualDivide() {
 
 function test() {
   console.log("testing");
+  alert("testing!");
 }
