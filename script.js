@@ -4,14 +4,29 @@ const canvas = document.getElementById("canvas");
 let objs;
 window.onload = function () {
   build();
-  canvas.addEventListener("click", (event) => {
+  canvas.addEventListener("mousedown", (event) => {
     for (let i = 0; i < objs.length; i++) {
       let c = objs[i].tBounds;
       if (event.x >= c.tL.x && event.x <= c.tR.x) {
         if (event.y >= c.tL.y && event.y <= c.bL.y) {
           objs[i].inFunc();
+          let objClass = Array.from(objs[i].e.classList);
+          for (let i = 0; i < objClass.length; i++) {
+            if (objClass[i].includes("_set")) {
+              objClass = objClass[i];
+              break;
+            }
+          }
+          objClass = objClass.substring(0, objClass.length - 3);
+          objs[i].e.classList.add(`${objClass}click`);
         }
       }
+    }
+  });
+  canvas.addEventListener("mouseup", () => {
+    for (let i = 0; i < objs.length; i++) {
+      let cL = Array.from(objs[i].e.classList);
+      console.log(cL);
     }
   });
   canvas.addEventListener("mousemove", (event) => {
@@ -32,7 +47,7 @@ window.onload = function () {
   });
 };
 function build() {
-  objs = Array.from(document.body.querySelectorAll("*"));
+  objs = Array.from(get("main").querySelectorAll("*"));
   canvas.removeAttribute("width");
   canvas.removeAttribute("height");
   canvas.width = canvas.offsetWidth;
@@ -50,7 +65,6 @@ function build() {
     )
       objs.splice(i, 1);
   }
-  objs.splice(objs.length - 3, 3);
   let temp = new Array(objs.length);
   for (let i = 0; i < objs.length; i++) {
     temp[i] = {
@@ -121,6 +135,38 @@ function build() {
         }
       },
     };
+    get("style").append(`
+      .${objs[i].tagName}${i}_set {
+      /*nothing here*/
+      }
+      .${objs[i].tagName}${i}_click {
+      background: ${(() => {
+        let d = 100;
+        let styles = window.getComputedStyle(temp[i].e);
+        let bg = styles.getPropertyValue("background");
+        if (bg != "auto") {
+          bg = bg.toString().split(")")[0] + ")";
+          bg = bg.split("");
+          let stylTemp = [];
+          for (let q = 0; q < bg.length; q++) {
+            if ((isNaN(Number(bg[q])) != true && bg[q] != " ") || bg[q] == ",")
+              stylTemp.push(bg[q]);
+          }
+          stylTemp = stylTemp.join("").split(",");
+          if (stylTemp.length == 3)
+            return `rgb(${stylTemp[0] - d},${stylTemp[1] - d},${
+              stylTemp[2] - d
+            })`;
+          else if (stylTemp.length == 4) {
+            return `rgba(${stylTemp[0] - d},${stylTemp[1] - d},${
+              stylTemp[2] - d
+            }, ${stylTemp[3]})`;
+          }
+        }
+      })()}
+      }
+    `);
+    temp[i].e.classList.add(`${objs[i].tagName}${i}_set`);
   }
   objs = temp;
   objs.forEach((elem) => elem.init());
@@ -137,7 +183,9 @@ function build() {
     else if (zA < zB) return -1;
     else return 0;
   });
-  //   visualDivide();
+  objs.sort(() => {
+    return -1;
+  });
 }
 function visualDivide() {
   for (let i = 0; i < objs.length; i++) {
@@ -146,8 +194,10 @@ function visualDivide() {
     ctx.stroke();
   }
 }
-
 function test() {
   console.log("testing");
-  alert("testing!");
+  // alert("testing!");
+}
+function get(arg) {
+  return document.querySelector(arg);
 }
