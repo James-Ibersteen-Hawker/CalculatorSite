@@ -114,19 +114,6 @@ function build() {
           y: objs[i].getBoundingClientRect().top,
         },
       },
-      init: function () {
-        if (this.e.getAttribute("onclick")) {
-          this.inFunc = function () {
-            eval(this.e.getAttribute("onclick"));
-          };
-          this.hasFunc = true;
-        } else {
-          this.inFunc = function () {
-            console.log("no function");
-          };
-          this.hasFunc = false;
-        }
-      },
       bg: (() => {
         let cClass = Array.from(objs[i].classList);
         let color = [];
@@ -163,16 +150,62 @@ function build() {
         }
         return color;
       })(),
+      init: function () {
+        this.bg = (() => {
+          let cClass = Array.from(this.e.classList);
+          let color = [];
+          for (let i = 0; i < cClass.length; i++) {
+            if (cClass[i].indexOf("c") == 0) {
+              let t = cClass[i].split("-");
+              t[0] = t[0].substring(1);
+              for (let x = 0; x < t.length; x++) {
+                if (t[x].length == 3) {
+                  if (isNaN(Number(t[x])) == false) {
+                    color.push(t[x]);
+                  }
+                } else if ((x = t.length - 1)) color.push(t[x]);
+              }
+            }
+          }
+          return color;
+        })();
+        this.hBg = (() => {
+          let hClass = Array.from(this.e.classList);
+          let color = [];
+          for (let i = 0; i < hClass.length; i++) {
+            if (hClass[i].indexOf("h") == 0) {
+              let t = hClass[i].split("-");
+              t[0] = t[0].substring(1);
+              for (let x = 0; x < t.length; x++) {
+                if (t[x].length == 3) {
+                  if (isNaN(Number(t[x])) == false) {
+                    color.push(t[x]);
+                  }
+                } else if ((x = t.length - 1)) color.push(t[x]);
+              }
+            }
+          }
+          return color;
+        })();
+        this.e.setAttribute("style", `background: rgba(${this.bg.join(",")})`);
+        if (this.e.getAttribute("onclick")) {
+          this.inFunc = function () {
+            eval(this.e.getAttribute("onclick"));
+          };
+          this.hasFunc = true;
+        } else {
+          this.inFunc = function () {
+            console.log("no function");
+          };
+          this.hasFunc = false;
+        }
+      },
     };
-    temp[i].e.setAttribute(
-      "style",
-      `background: rgba(${temp[i].bg.join(",")})`
-    );
     let style = document.createElement("style");
     temp[i].cL = `${objs[i].tagName}${i}_click`;
     temp[i].name = `${objs[i].tagName}${i}`;
     temp[i].e.classList.add(temp[i].name);
-    console.log(temp[i].name);
+    temp[i].e.setAttribute("data-idef", temp[i].name);
     style.append(`
       .${temp[i].name}_click {
       background: ${(() => {
@@ -223,8 +256,14 @@ function build() {
   for (let q = 0; q < objs.length; q++) {
     let config = {
       attributes: true,
+      attributeFilter: ["class", "style"],
     };
-    let observer = new MutationObserver(() => {});
+    let observer = new MutationObserver((record) => {
+      console.log(record[0].target);
+      // for (let i = 0; i < objs.length; i++) {
+      //   if (objs[i].e == record[0].target) objs[i].init();
+      // }
+    });
     observer.observe(objs[q].e, config);
   }
 }
