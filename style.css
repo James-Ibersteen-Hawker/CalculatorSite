@@ -40,7 +40,6 @@ main {
   transition: 0.2s;
   width: 100px;
   height: 20px;
-  background: white;
 }
 .button2 {
   position: absolute;

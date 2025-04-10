@@ -2,7 +2,7 @@
 const canvas = document.getElementById("canvas");
 // const ctx = canvas.getContext("2d");
 let objs;
-window.onload = function () {
+window.addEventListener("DOMContentLoaded", function () {
   build();
   canvas.addEventListener("mousedown", (event) => {
     for (let i = 0; i < objs.length; i++) {
@@ -29,6 +29,7 @@ window.onload = function () {
           if (objs[i].hasFunc == true) {
             canvas.classList.add("pointer");
             if (!objs[i].e.classList.contains("focus")) {
+              objs[i].e.removeAttribute("style");
               objs[i].e.classList.add("focus");
             }
             break;
@@ -38,11 +39,10 @@ window.onload = function () {
       canvas.classList.remove("pointer");
       if (objs[i].e.classList.contains("focus")) {
         objs[i].e.classList.remove("focus");
-        objs[i].e.classList.remove("focus");
       }
     }
   });
-};
+});
 function build() {
   objs = Array.from(get("main").querySelectorAll("*"));
   objs.splice(objs.indexOf(canvas), 1);
@@ -127,53 +127,77 @@ function build() {
           this.hasFunc = false;
         }
       },
+      bg: (() => {
+        let cClass = Array.from(objs[i].classList);
+        let color = [];
+        for (let i = 0; i < cClass.length; i++) {
+          if (cClass[i].indexOf("c") == 0) {
+            let t = cClass[i].split("-");
+            t[0] = t[0].substring(1);
+            for (let x = 0; x < t.length; x++) {
+              if (t[x].length == 3) {
+                if (isNaN(Number(t[x])) == false) {
+                  color.push(t[x]);
+                }
+              } else if ((x = t.length - 1)) color.push(t[x]);
+            }
+          }
+        }
+        return color;
+      })(),
+      hBg: (() => {
+        let hClass = Array.from(objs[i].classList);
+        let color = [];
+        for (let i = 0; i < hClass.length; i++) {
+          if (hClass[i].indexOf("h") == 0) {
+            let t = hClass[i].split("-");
+            t[0] = t[0].substring(1);
+            for (let x = 0; x < t.length; x++) {
+              if (t[x].length == 3) {
+                if (isNaN(Number(t[x])) == false) {
+                  color.push(t[x]);
+                }
+              } else if ((x = t.length - 1)) color.push(t[x]);
+            }
+          }
+        }
+        return color;
+      })(),
     };
+    temp[i].e.setAttribute(
+      "style",
+      `background: rgba(${temp[i].bg.join(",")})`
+    );
     let style = document.createElement("style");
-    temp[i].e.classList.add(`${objs[i].tagName}${i}_set`);
     temp[i].cL = `${objs[i].tagName}${i}_click`;
+    temp[i].name = `${objs[i].tagName}${i}`;
+    temp[i].e.classList.add(temp[i].name);
+    console.log(temp[i].name);
     style.append(`
-      .${objs[i].tagName}${i}_click {
+      .${temp[i].name}_click {
       background: ${(() => {
         let d = 50;
-        let styles = window.getComputedStyle(temp[i].e);
-        let bg = styles.getPropertyValue("background");
-        if (bg != "auto" && !bg.includes("url") && !bg.includes("gradient")) {
-          bg = bg.toString().split(")")[0];
-          bg = bg.split("");
-          let stylTemp = [];
-          for (let q = 0; q < bg.length; q++) {
-            if ((isNaN(Number(bg[q])) != true && bg[q] != " ") || bg[q] == ",")
-              stylTemp.push(bg[q]);
-          }
-          stylTemp = stylTemp.join("").split(",");
-          let r = stylTemp[0];
-          let g = stylTemp[1];
-          let b = stylTemp[2];
-          let a = 1;
-          let compile;
-          if (stylTemp.length == 3) {
-            if (r - d < 0) r = 0;
-            else r = r - d;
-            if (g - d < 0) g = 0;
-            else g = g - d;
-            if (b - d < 0) b = 0;
-            else b = b - d;
-            compile = `rgb(${r},${g},${b})`;
-            return compile;
-          } else if (stylTemp.length == 4) {
-            if (r - d < 0) r = 0;
-            else r = r - d;
-            if (g - d < 0) g = 0;
-            else g = g - d;
-            if (b - d < 0) b = 0;
-            else b = b - d;
-            a = stylTemp[3];
-            compile = `rgba(${r},${g},${b}, ${a})`;
-            return compile;
-          }
+        let stylTemp = temp[i].hBg;
+        let r = stylTemp[0];
+        let g = stylTemp[1];
+        let b = stylTemp[2];
+        let a = stylTemp[3];
+        let compile;
+        if (stylTemp.length == 4) {
+          if (r - d < 0) r = 0;
+          else r = r - d;
+          if (g - d < 0) g = 0;
+          else g = g - d;
+          if (b - d < 0) b = 0;
+          else b = b - d;
+          compile = `rgba(${r},${g},${b}, ${a})`;
+          return compile;
         }
       })()} !important;
           }
+      .${temp[i].name}.focus {
+      background: rgba(${temp[i].hBg.join(",")});
+      }
     `);
     style.id = `_${objs[i].tagName}${i}`;
     document.head.append(style);
@@ -200,88 +224,7 @@ function build() {
     let config = {
       attributes: true,
     };
-    let observer = new MutationObserver(() => {
-      let i;
-      let classItem;
-      objs[q].e.classList.forEach((elem) => {
-        if (elem.includes("set")) classItem = elem;
-      });
-      for (let k = 0; k < classItem.length; k++) {
-        if (!isNaN(Number(classItem[k]))) i = Number(classItem[k]);
-      }
-      let elem = get(`.${classItem}`);
-      for (let r = 0; r < objs.length; r++) {
-        if (objs[r].e == elem) {
-          elem = objs[r];
-          break;
-        }
-      }
-      if (get(`#_${elem.e.tagName}${i}`)) {
-        get(`#_${elem.e.tagName}${i}`).remove();
-      }
-      let style = document.createElement("style");
-      style.id = `_${elem.e.tagName}${i}`;
-      let CSSclass = `.${elem.e.tagName}${i}_click {
-          background: ${(() => {
-            let d = 50;
-            let styles = window.getComputedStyle(elem.e);
-            let bg = styles.getPropertyValue("background");
-            if (
-              bg != "auto" &&
-              !bg.includes("url") &&
-              !bg.includes("gradient")
-            ) {
-              bg = bg.toString().split(")")[0];
-              console.log(bg);
-              bg = bg.split("");
-              let stylTemp = [];
-              for (let q = 0; q < bg.length; q++) {
-                if (
-                  (isNaN(Number(bg[q])) != true && bg[q] != " ") ||
-                  bg[q] == ","
-                )
-                  stylTemp.push(bg[q]);
-              }
-              stylTemp = stylTemp.join("").split(",");
-              let r = stylTemp[0];
-              let g = stylTemp[1];
-              let b = stylTemp[2];
-              let a = 1;
-              let compile;
-              if (stylTemp.length == 3) {
-                if (r - d < 0) r = 0;
-                else r = r - d;
-                if (g - d < 0) g = 0;
-                else g = g - d;
-                if (b - d < 0) b = 0;
-                else b = b - d;
-                compile = `rgb(${r},${g},${b})`;
-                console.log("here", compile);
-                return compile;
-              } else if (stylTemp.length == 4) {
-                if (r - d < 0) r = 0;
-                else r = r - d;
-                if (g - d < 0) g = 0;
-                else g = g - d;
-                if (b - d < 0) b = 0;
-                else b = b - d;
-                a = stylTemp[3];
-                console.log(compile);
-                compile = `rgba(${r},${g},${b}, ${a})`;
-                return compile;
-              }
-            }
-          })()};
-          }
-        `;
-      console.log(CSSclass);
-      style.append(CSSclass);
-      document.head.append(style);
-      console.log(
-        elem.e.classList,
-        window.getComputedStyle(elem.e).getPropertyValue("background")
-      );
-    });
+    let observer = new MutationObserver(() => {});
     observer.observe(objs[q].e, config);
   }
 }
