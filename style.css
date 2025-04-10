@@ -30,7 +30,7 @@ main {
   box-sizing: border-box;
   position: relative;
   z-index: 2 !important;
-  background: rgba(0, 0, 255, 0.5);
+  background: rgba(0, 0, 255, 0.2);
 }
 .button1 {
   position: absolute;
@@ -51,9 +51,6 @@ main {
   width: 100px;
   height: 20px;
   background: white;
-}
-.focus {
-  background: red;
 }
 .pointer {
   cursor: pointer !important;

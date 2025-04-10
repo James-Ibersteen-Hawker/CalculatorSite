@@ -28,24 +28,23 @@ window.onload = function () {
         if (event.y >= c.tL.y && event.y <= c.bL.y) {
           if (objs[i].hasFunc == true) {
             canvas.classList.add("pointer");
-            if (!objs[i].e.classList.contains("focus"))
+            if (!objs[i].e.classList.contains("focus")) {
               objs[i].e.classList.add("focus");
+            }
             break;
           }
         }
       }
       canvas.classList.remove("pointer");
-      if (objs[i].e.classList.contains("focus"))
+      if (objs[i].e.classList.contains("focus")) {
         objs[i].e.classList.remove("focus");
+        objs[i].e.classList.remove("focus");
+      }
     }
   });
 };
 function build() {
   objs = Array.from(get("main").querySelectorAll("*"));
-  canvas.removeAttribute("width");
-  canvas.removeAttribute("height");
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
   objs.splice(objs.indexOf(canvas), 1);
   for (let i = 0; i < objs.length; i++) {
     if (
@@ -130,17 +129,16 @@ function build() {
       },
     };
     let style = document.createElement("style");
+    temp[i].e.classList.add(`${objs[i].tagName}${i}_set`);
+    temp[i].cL = `${objs[i].tagName}${i}_click`;
     style.append(`
-      .${objs[i].tagName}${i}_set {
-      /*nothing here*/
-      }
       .${objs[i].tagName}${i}_click {
       background: ${(() => {
-        let d = 100;
+        let d = 50;
         let styles = window.getComputedStyle(temp[i].e);
         let bg = styles.getPropertyValue("background");
-        if (bg != "auto") {
-          bg = bg.toString().split(")")[0] + ")";
+        if (bg != "auto" && !bg.includes("url") && !bg.includes("gradient")) {
+          bg = bg.toString().split(")")[0];
           bg = bg.split("");
           let stylTemp = [];
           for (let q = 0; q < bg.length; q++) {
@@ -148,22 +146,36 @@ function build() {
               stylTemp.push(bg[q]);
           }
           stylTemp = stylTemp.join("").split(",");
-          if (stylTemp.length == 3)
-            return `rgb(${stylTemp[0] - d},${stylTemp[1] - d},${
-              stylTemp[2] - d
-            })`;
-          else if (stylTemp.length == 4) {
-            return `rgba(${stylTemp[0] - d},${stylTemp[1] - d},${
-              stylTemp[2] - d
-            }, ${stylTemp[3]})`;
+          let r = stylTemp[0];
+          let g = stylTemp[1];
+          let b = stylTemp[2];
+          let a = 1;
+          let compile;
+          if (stylTemp.length == 3) {
+            if (r - d < 0) r = 0;
+            else r = r - d;
+            if (g - d < 0) g = 0;
+            else g = g - d;
+            if (b - d < 0) b = 0;
+            else b = b - d;
+            compile = `rgb(${r},${g},${b})`;
+            return compile;
+          } else if (stylTemp.length == 4) {
+            if (r - d < 0) r = 0;
+            else r = r - d;
+            if (g - d < 0) g = 0;
+            else g = g - d;
+            if (b - d < 0) b = 0;
+            else b = b - d;
+            a = stylTemp[3];
+            compile = `rgba(${r},${g},${b}, ${a})`;
+            return compile;
           }
         }
-      })()};
-      }
+      })()} !important;
+          }
     `);
     style.id = `_${objs[i].tagName}${i}`;
-    temp[i].e.classList.add(`${objs[i].tagName}${i}_set`);
-    temp[i].cL = `${objs[i].tagName}${i}_click`;
     document.head.append(style);
   }
   objs = temp;
@@ -209,13 +221,18 @@ function build() {
       }
       let style = document.createElement("style");
       style.id = `_${elem.e.tagName}${i}`;
-      style.append(`.${elem.e.tagName}${i}_click {
+      let CSSclass = `.${elem.e.tagName}${i}_click {
           background: ${(() => {
             let d = 50;
             let styles = window.getComputedStyle(elem.e);
             let bg = styles.getPropertyValue("background");
-            if (bg != "auto") {
-              bg = bg.toString().split(")")[0] + ")";
+            if (
+              bg != "auto" &&
+              !bg.includes("url") &&
+              !bg.includes("gradient")
+            ) {
+              bg = bg.toString().split(")")[0];
+              console.log(bg);
               bg = bg.split("");
               let stylTemp = [];
               for (let q = 0; q < bg.length; q++) {
@@ -226,27 +243,44 @@ function build() {
                   stylTemp.push(bg[q]);
               }
               stylTemp = stylTemp.join("").split(",");
-              let r;
-              let g;
-              let b;
-              let a;
+              let r = stylTemp[0];
+              let g = stylTemp[1];
+              let b = stylTemp[2];
+              let a = 1;
+              let compile;
               if (stylTemp.length == 3) {
-                stylTemp[0] - d < 0 ? (r = 0) : (r = stylTemp[0] - d);
-                stylTemp[1] - d < 0 ? (b = 0) : (g = stylTemp[1] - d);
-                stylTemp[2] - d < 0 ? (g = 0) : (b = stylTemp[2] - d);
-                return `rgb(${r},${g},${b})`;
+                if (r - d < 0) r = 0;
+                else r = r - d;
+                if (g - d < 0) g = 0;
+                else g = g - d;
+                if (b - d < 0) b = 0;
+                else b = b - d;
+                compile = `rgb(${r},${g},${b})`;
+                console.log("here", compile);
+                return compile;
               } else if (stylTemp.length == 4) {
-                stylTemp[0] - d < 0 ? (r = 0) : (r = stylTemp[0] - d);
-                stylTemp[1] - d < 0 ? (b = 0) : (g = stylTemp[1] - d);
-                stylTemp[2] - d < 0 ? (g = 0) : (b = stylTemp[2] - d);
+                if (r - d < 0) r = 0;
+                else r = r - d;
+                if (g - d < 0) g = 0;
+                else g = g - d;
+                if (b - d < 0) b = 0;
+                else b = b - d;
                 a = stylTemp[3];
-                return `rgba(${r},${g},${b}, ${a})`;
+                console.log(compile);
+                compile = `rgba(${r},${g},${b}, ${a})`;
+                return compile;
               }
             }
           })()};
           }
-        `);
+        `;
+      console.log(CSSclass);
+      style.append(CSSclass);
       document.head.append(style);
+      console.log(
+        elem.e.classList,
+        window.getComputedStyle(elem.e).getPropertyValue("background")
+      );
     });
     observer.observe(objs[q].e, config);
   }
