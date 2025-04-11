@@ -47,6 +47,12 @@ window.addEventListener("DOMContentLoaded", function () {
     }
   });
   type(" JavaScript Terminal Calculator", get("#text"));
+  setTimeout(() => {
+    get("#text").classList.remove("cursor");
+    get("#begin").append(">>");
+    get("#begin").classList.add("cursor");
+    type(" Type /begin to start", get("#begin"));
+  }, " JavaScript Terminal Calculator".length * 300 + 1000);
 });
 window.onresize = build();
 function build() {
@@ -294,7 +300,7 @@ function type(arg, destination) {
       () => {
         destination.append(arg[i]);
       },
-      200 * i,
+      300 * i,
       arg,
       i
     );
