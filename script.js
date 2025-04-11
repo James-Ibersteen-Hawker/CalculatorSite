@@ -39,6 +39,10 @@ window.addEventListener("DOMContentLoaded", function () {
       canvas.classList.remove("pointer");
       if (objs[i].e.classList.contains("focus")) {
         objs[i].e.classList.remove("focus");
+        objs[i].e.setAttribute(
+          "style",
+          `background: rgba(${objs[i].bg.join(",")});`
+        );
       }
     }
   });
