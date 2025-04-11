@@ -43,6 +43,7 @@ window.onload = function () {
     }
   });
 };
+window.onresize = build();
 function build() {
   objs = Array.from(get("main").querySelectorAll("*"));
   objs.splice(objs.indexOf(canvas), 1);
@@ -219,6 +220,7 @@ function build() {
       if (get(`#_${elem.e.tagName}${i}`)) {
         get(`#_${elem.e.tagName}${i}`).remove();
       }
+      console.log(elem);
       let style = document.createElement("style");
       style.id = `_${elem.e.tagName}${i}`;
       let CSSclass = `.${elem.e.tagName}${i}_click {
