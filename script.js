@@ -1,6 +1,6 @@
 "use strict";
 const canvas = document.getElementById("canvas");
-// const ctx = canvas.getContext("2d");
+let cursor = get("#cursor");
 let objs;
 window.addEventListener("DOMContentLoaded", function () {
   build();
@@ -46,10 +46,12 @@ window.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
+  type(" JavaScript Terminal Calculator", get("#text"));
 });
 window.onresize = build();
 function build() {
   objs = Array.from(get("main").querySelectorAll("*"));
+  console.log(objs);
   objs.splice(objs.indexOf(canvas), 1);
   for (let i = 0; i < objs.length; i++) {
     if (
@@ -284,4 +286,17 @@ function test() {
 }
 function get(arg) {
   return document.querySelector(arg);
+}
+function type(arg, destination) {
+  arg = arg.split("");
+  for (let i = 0; i < arg.length; i++) {
+    setTimeout(
+      () => {
+        destination.append(arg[i]);
+      },
+      200 * i,
+      arg,
+      i
+    );
+  }
 }
