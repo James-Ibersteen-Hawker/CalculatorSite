@@ -64,11 +64,11 @@ p {
   box-sizing: border-box;
   height: 3ex;
   display: inline-block;
-  /* border: 1px solid red; */
   position: relative;
   white-space: pre;
   padding: 0;
   margin: 0;
+  margin-bottom: -5px;
   padding-bottom: 0 !important;
 }
 .cursor::after {

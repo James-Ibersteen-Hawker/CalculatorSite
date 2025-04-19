@@ -2,6 +2,7 @@
 const canvas = document.getElementById("canvas");
 let cursor = get("#cursor");
 let objs;
+let typeOffset = 200;
 window.addEventListener("DOMContentLoaded", function () {
   build();
   canvas.addEventListener("mousedown", (event) => {
@@ -46,13 +47,31 @@ window.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
-  type(" JavaScript Terminal Calculator", get("#text"));
+  let m1 = " JavaScript Terminal Calculator";
+  type(m1, get("#text"));
   setTimeout(() => {
     get("#text").classList.remove("cursor");
     get("#begin").append(">>");
     get("#begin").classList.add("cursor");
     type(" Type /begin to start", get("#begin"));
-  }, " JavaScript Terminal Calculator".length * 300 + 1000);
+    setTimeout(() => {
+      get("#textInput1").append(">> ");
+      get("#begin").classList.remove("cursor");
+      get("#textInput1").classList.add("cursor");
+      window.addEventListener("keydown", (event) => {
+        if (!get("#textInput1").classList.contains("d-none")) {
+          let bx = get("#textInput1");
+          let inp = bx.textContent;
+          if (event.key.match(/[a-zA-Z\.\,\/\\]/) && event.key.length == 1)
+            bx.append(event.key);
+          else if (event.key == "Backspace" && inp != ">> ")
+            bx.textContent = inp.substring(0, inp.length - 1);
+          if (event.key == "Enter")
+            if ("/" + inp.substring(4).toLowerCase() == "/begin") begin();
+        }
+      });
+    }, " Type /begin to start".length * typeOffset + 1000);
+  }, m1.length * typeOffset + 1000);
 });
 window.onresize = build();
 function build() {
@@ -300,9 +319,25 @@ function type(arg, destination) {
       () => {
         destination.append(arg[i]);
       },
-      300 * i,
+      typeOffset * i,
       arg,
       i
     );
   }
+}
+function begin() {
+  get("#intro").classList.add("d-none");
+  window.removeEventListener("keydown", (event) => {
+    if (!get("#textInput1").classList.contains("d-none")) {
+      let bx = get("#textInput1");
+      let inp = bx.textContent;
+      if (event.key.match(/[a-zA-Z\.\,\/\\]/) && event.key.length == 1)
+        bx.append(event.key);
+      else if (event.key == "Backspace" && inp != ">> ")
+        bx.textContent = inp.substring(0, inp.length - 1);
+      if (event.key == "Enter")
+        if ("/" + inp.substring(4).toLowerCase() == "/begin") begin();
+    }
+  });
+  alert("removed!");
 }
