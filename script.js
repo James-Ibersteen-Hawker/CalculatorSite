@@ -2,7 +2,64 @@
 const canvas = document.getElementById("canvas");
 let cursor = get("#cursor");
 let objs;
-let typeOffset = 200;
+let typeOffset = 0;
+class Calculator {
+  //what properties would a calculator have?
+  buttons;
+  width;
+  constructor(buttons, width) {
+    this.buttons = buttons;
+    this.width = width;
+  }
+  make() {
+    let cont = get("#calculator");
+    let temp = document.createElement("span");
+    temp.setAttribute(
+      "style",
+      "display:block; font-size: 1ex; margin: 0; padding: 0;position: fixed;opacity: 0;"
+    );
+    temp.textContent = "x";
+    temp.id = "temp";
+    document.body.append(temp);
+    let ex1 = get("#temp").offsetWidth;
+    let xOffset;
+    let wNum;
+    get("#temp").remove();
+    {
+      //topborder
+      let topBorder = document.createElement("span");
+      topBorder.setAttribute(
+        "style",
+        "display: block; width: calc(100% - 20px); border: 1px solid red; height: 10px; font-size: 3ex; white-space: pre;"
+      );
+      topBorder.id = "tB";
+      cont.append(topBorder);
+      let w = topBorder.offsetWidth;
+      let nW = Math.round(w * this.width);
+      let split = Math.floor((w - nW) / 2);
+      let aS1 = Math.round(split / (ex1 * 3));
+      let amountP = Math.round(nW / (ex1 * 3));
+      xOffset = aS1;
+      wNum = amountP;
+      for (let i = 0; i < aS1 + amountP; i++) {
+        if (i < aS1) {
+          alert("append space");
+          get("#tB").append(" ");
+        } else get("#tB").append(".");
+      }
+    }
+  }
+  solve(equation) {
+    alert(eval(equation));
+  }
+  btnPress(btn) {
+    alert(this.buttons[btn]);
+  }
+}
+let CALC = new Calculator(
+  ["π", "^", "×", "-", false, "(", ")", "-1", "✓"],
+  0.6
+);
 window.addEventListener("DOMContentLoaded", function () {
   build();
   canvas.addEventListener("mousedown", (event) => {
@@ -59,6 +116,11 @@ window.addEventListener("DOMContentLoaded", function () {
       get("#begin").classList.remove("cursor");
       get("#textInput1").classList.add("cursor");
       window.addEventListener("keydown", (event) => {
+        if (
+          get("#textInput1").textContent.length - 3 > 15 &&
+          event.key != "Backspace"
+        )
+          return;
         if (!get("#textInput1").classList.contains("d-none")) {
           let bx = get("#textInput1");
           let inp = bx.textContent;
@@ -339,5 +401,5 @@ function begin() {
         if ("/" + inp.substring(4).toLowerCase() == "/begin") begin();
     }
   });
-  alert("removed!");
+  CALC.make();
 }
