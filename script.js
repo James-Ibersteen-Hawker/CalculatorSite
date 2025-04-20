@@ -7,9 +7,15 @@ class Calculator {
   //what properties would a calculator have?
   buttons;
   width;
-  constructor(buttons, width) {
+  minWidth;
+  height;
+  minHeight;
+  constructor(buttons, width, minWidth, height, minHeight) {
     this.buttons = buttons;
     this.width = width;
+    this.minWidth = minWidth;
+    this.height = height;
+    this.minHeight = minHeight;
   }
   make() {
     let cont = get("#calculator");
@@ -22,20 +28,22 @@ class Calculator {
     temp.id = "temp";
     document.body.append(temp);
     let ex1 = get("#temp").offsetWidth;
+    let ex1H = get("#temp").offsetHeight;
     let xOffset;
     let wNum;
     get("#temp").remove();
+    //topborder
     {
-      //topborder
       let topBorder = document.createElement("span");
       topBorder.setAttribute(
         "style",
-        "display: block; width: calc(100% - 20px); border: 1px solid red; height: 10px; font-size: 3ex; white-space: pre;"
+        "display: block; width: calc(100% - 20px); font-size: 3ex; white-space: pre;"
       );
       topBorder.id = "tB";
       cont.append(topBorder);
       let w = topBorder.offsetWidth;
       let nW = Math.round(w * this.width);
+      if (nW < this.minWidth) nW = this.minWidth;
       let split = Math.floor((w - nW) / 2);
       let aS1 = Math.round(split / (ex1 * 3));
       let amountP = Math.round(nW / (ex1 * 3));
@@ -43,9 +51,43 @@ class Calculator {
       wNum = amountP;
       for (let i = 0; i < aS1 + amountP; i++) {
         if (i < aS1) {
-          alert("append space");
           get("#tB").append(" ");
         } else get("#tB").append(".");
+      }
+    }
+    //sides
+    {
+      let nH = Math.round(window.innerHeight * this.height);
+      if (nH < this.minHeight) nH = this.minHeight;
+      let amountV = Math.round(nH / (ex1H * 3)) - 3;
+      for (let i = 0; i < amountV; i++) {
+        let row = document.createElement("span");
+        row.setAttribute(
+          "style",
+          "display: block; width: calc(100% - 20px); font-size: 3ex; white-space: pre;"
+        );
+        row.id = `sB${i}`;
+        cont.append(row);
+        row = get(`#sB${i}`);
+        for (let q = 0; q < xOffset + wNum; q++) {
+          if (q == xOffset || q == xOffset + wNum - 1) row.append(".");
+          else row.append(" ");
+        }
+      }
+    }
+    //bottombottomborder
+    {
+      let bottomBorder = document.createElement("span");
+      bottomBorder.setAttribute(
+        "style",
+        "display: block; width: calc(100% - 20px); font-size: 3ex; white-space: pre;"
+      );
+      bottomBorder.id = "bB";
+      cont.append(bottomBorder);
+      for (let i = 0; i < xOffset + wNum; i++) {
+        if (i < xOffset) {
+          get("#bB").append(" ");
+        } else get("#bB").append(".");
       }
     }
   }
@@ -58,7 +100,10 @@ class Calculator {
 }
 let CALC = new Calculator(
   ["π", "^", "×", "-", false, "(", ")", "-1", "✓"],
-  0.6
+  0.6,
+  450,
+  0.7,
+  600
 );
 window.addEventListener("DOMContentLoaded", function () {
   build();
@@ -389,17 +434,6 @@ function type(arg, destination) {
 }
 function begin() {
   get("#intro").classList.add("d-none");
-  window.removeEventListener("keydown", (event) => {
-    if (!get("#textInput1").classList.contains("d-none")) {
-      let bx = get("#textInput1");
-      let inp = bx.textContent;
-      if (event.key.match(/[a-zA-Z\.\,\/\\]/) && event.key.length == 1)
-        bx.append(event.key);
-      else if (event.key == "Backspace" && inp != ">> ")
-        bx.textContent = inp.substring(0, inp.length - 1);
-      if (event.key == "Enter")
-        if ("/" + inp.substring(4).toLowerCase() == "/begin") begin();
-    }
-  });
+  get("#textInput1").classList.add("d-none");
   CALC.make();
 }

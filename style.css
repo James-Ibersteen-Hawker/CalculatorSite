@@ -93,3 +93,8 @@ p {
     background-color: transparent;
   }
 }
+#calculator {
+  display: flex;
+  flex-direction: column;
+}
+
