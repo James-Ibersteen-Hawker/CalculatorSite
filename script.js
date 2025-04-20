@@ -10,12 +10,16 @@ class Calculator {
   minWidth;
   height;
   minHeight;
-  constructor(buttons, width, minWidth, height, minHeight) {
+  wWidth;
+  wHeight;
+  constructor(buttons, width, minWidth, height, minHeight, wWidth, wHeight) {
     this.buttons = buttons;
     this.width = width;
     this.minWidth = minWidth;
     this.height = height;
     this.minHeight = minHeight;
+    this.wWidth = wWidth;
+    this.wHeight = wHeight;
   }
   make() {
     let cont = get("#calculator");
@@ -35,10 +39,6 @@ class Calculator {
     //topborder
     {
       let topBorder = document.createElement("span");
-      topBorder.setAttribute(
-        "style",
-        "display: block; width: calc(100% - 20px); font-size: 3ex; white-space: pre;"
-      );
       topBorder.id = "tB";
       cont.append(topBorder);
       let w = topBorder.offsetWidth;
@@ -62,15 +62,13 @@ class Calculator {
       let amountV = Math.round(nH / (ex1H * 3)) - 3;
       for (let i = 0; i < amountV; i++) {
         let row = document.createElement("span");
-        row.setAttribute(
-          "style",
-          "display: block; width: calc(100% - 20px); font-size: 3ex; white-space: pre;"
-        );
         row.id = `sB${i}`;
         cont.append(row);
         row = get(`#sB${i}`);
+        row.classList.add("sideRow");
         for (let q = 0; q < xOffset + wNum; q++) {
-          if (q == xOffset || q == xOffset + wNum - 1) row.append(".");
+          if (q == xOffset || q == xOffset + wNum - 1) row.append("|");
+          else if (q > xOffset && q < xOffset + wNum) row.append("#");
           else row.append(" ");
         }
       }
@@ -78,10 +76,6 @@ class Calculator {
     //bottombottomborder
     {
       let bottomBorder = document.createElement("span");
-      bottomBorder.setAttribute(
-        "style",
-        "display: block; width: calc(100% - 20px); font-size: 3ex; white-space: pre;"
-      );
       bottomBorder.id = "bB";
       cont.append(bottomBorder);
       for (let i = 0; i < xOffset + wNum; i++) {
@@ -89,6 +83,16 @@ class Calculator {
           get("#bB").append(" ");
         } else get("#bB").append(".");
       }
+    }
+    //textWindow
+    {
+      //top of window
+      let w = Math.round(wNum * this.wWidth);
+      alert(w);
+      let rW = Math.round(wNum - w / 2);
+      let top = get("#tB").textContent.split("");
+      top[2] = 3;
+      get("#tB").textContent = top.join("");
     }
   }
   solve(equation) {
@@ -103,7 +107,9 @@ let CALC = new Calculator(
   0.6,
   450,
   0.7,
-  600
+  600,
+  0.9,
+  100
 );
 window.addEventListener("DOMContentLoaded", function () {
   build();
@@ -151,6 +157,7 @@ window.addEventListener("DOMContentLoaded", function () {
   });
   let m1 = " JavaScript Terminal Calculator";
   type(m1, get("#text"));
+  begin();
   setTimeout(() => {
     get("#text").classList.remove("cursor");
     get("#begin").append(">>");

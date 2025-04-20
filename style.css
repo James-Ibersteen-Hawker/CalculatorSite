@@ -97,4 +97,18 @@ p {
   display: flex;
   flex-direction: column;
 }
+#tB,
+#bB,
+.sideRow {
+  display: block;
+  width: calc(100% - 20px);
+  font-size: 3ex;
+  white-space: pre;
+}
 
+.sideRow {
+  margin-top: -5px;
+}
+#bB {
+  margin-top: -10px;
+}
