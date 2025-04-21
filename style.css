@@ -117,3 +117,9 @@ p {
 #bInterspan {
   text-decoration: overline;
 }
+.overscore {
+  text-decoration: overline;
+}
+.underscore {
+  text-decoration: underline;
+}

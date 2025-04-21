@@ -48,7 +48,6 @@ class Calculator {
     let wNum;
     let hNum;
     let inOffset;
-    let bodyNum;
     let endW;
     let wH;
     get("#temp").remove();
@@ -105,7 +104,6 @@ class Calculator {
     {
       //top of window
       let w = Math.round(wNum * this.wWidth);
-      bodyNum = w;
       let rW = Math.round((wNum - w) / 2);
       inOffset = rW;
       let top = get("#sB0").textContent.split("");
@@ -142,26 +140,52 @@ class Calculator {
     //buttons
     {
       let row1 = this.buttons.slice(0, this.buttons.indexOf(false));
-      let w = bodyNum - inOffset * 2;
-      let bWidth = w / row1.length;
-      let h = hNum - wH;
+      let w = Math.round(wNum * this.wWidth);
+      let bW = Math.floor(w / row1.length);
+      let rW = Math.round((wNum - w) / 2);
+      let sI = wH + 1;
+      let wOffset = xOffset + rW;
+      let t = wOffset + w;
+      let height = Math.round(hNum * this.bHeight);
       let inters = [];
-      for (let i = endW + 1; i < h + endW - 1; i++) {
+      for (let i = sI; i < height + sI; i++) {
         inters.push(get(`#sB${i}`));
       }
-      let firstR = inters.slice(0, Math.floor(inters.length / 2));
-      let secondR = inters.slice(Math.floor(inters.length / 2), inters.length);
-      for (let i = 0; i < row1.length; i++) {
-        for (let q = 0; q < firstR.length; q++) {
-          let current = firstR[q].textContent.split("");
-          firstR[q].textContent = "a";
+      let fR = inters.slice(0, Math.round(inters.length / 2));
+      for (let q = 0; q < fR.length; q++) {
+        let txt = inters[q].textContent.split("");
+        for (let i = 0; i < t; i++) {
+          if (i == wOffset || i == t - 3) {
+            if (q == 0) {
+              if (i == wOffset) txt[i] = "<span class='overscore'>|";
+              if (i == t - 3) txt[i] = "|</span>";
+            } else if (q == fR.length - 1) {
+              if (i == wOffset) txt[i] = "<span class='underscore'>|";
+              if (i == t - 3) txt[i] = "|</span>";
+            } else {
+              txt[i] = "|";
+            }
+          }
         }
+        fR[q].innerHTML = txt.join("");
       }
-      for (let i = 0; i < row1.length; i++) {
-        for (let q = 0; q < secondR.length; q++) {
-          let current = secondR[q].textContent.split("");
-          secondR[q].textContent = "b";
+      let bR = inters.slice(Math.round(inters.length / 2), inters.length);
+      for (let q = 0; q < bR.length; q++) {
+        let txt = inters[q].textContent.split("");
+        for (let i = 0; i < t; i++) {
+          if (i == wOffset || i == t - 3) {
+            if (q == 0) {
+              if (i == wOffset) txt[i] = "<span class='overscore'>|";
+              if (i == t - 3) txt[i] = "|</span>";
+            } else if (q == fR.length - 1) {
+              if (i == wOffset) txt[i] = "<span class='underscore'>|";
+              if (i == t - 3) txt[i] = "|</span>";
+            } else {
+              txt[i] = "|";
+            }
+          }
         }
+        bR[q].innerHTML = txt.join("");
       }
     }
   }
