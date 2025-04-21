@@ -165,9 +165,32 @@ class Calculator {
             } else {
               txt[i] = "|";
             }
-          }
+          } else if (i > wOffset && i < t - 3) txt[i] = " ";
         }
         fR[q].innerHTML = txt.join("");
+      }
+      for (let q = 0; q < fR.length; q++) {
+        let txt = fR[q].textContent.split("|").slice(2);
+        txt.splice(1, 2);
+        txt = txt[0];
+        let content = fR[q].innerHTML.split("");
+        let incr = Math.round(txt.length / row1.length);
+        for (let i = 0; i < row1.length; i++) {
+          for (let z = 0; z < txt.length; z++) {
+            if (z == incr * (i + 1) && i != row1.length - 1) {
+              if (q == 0)
+                content[
+                  z + xOffset + inOffset + "<span class='overscore'>".length
+                ] = "|";
+              else if (q == fR.length - 1)
+                content[
+                  z + xOffset + inOffset + "<span class='underscore'>".length
+                ] = "|";
+              else content[z + xOffset + inOffset] = "|";
+            }
+          }
+        }
+        fR[q].innerHTML = content.join("");
       }
       let bR = inters.slice(Math.round(inters.length / 2), inters.length);
       for (let q = 0; q < bR.length; q++) {
@@ -177,15 +200,38 @@ class Calculator {
             if (q == 0) {
               if (i == wOffset) txt[i] = "<span class='overscore'>|";
               if (i == t - 3) txt[i] = "|</span>";
-            } else if (q == fR.length - 1) {
+            } else if (q == bR.length - 1) {
               if (i == wOffset) txt[i] = "<span class='underscore'>|";
               if (i == t - 3) txt[i] = "|</span>";
             } else {
               txt[i] = "|";
             }
-          }
+          } else if (i > wOffset && i < t - 3) txt[i] = " ";
         }
         bR[q].innerHTML = txt.join("");
+      }
+      for (let q = 0; q < bR.length; q++) {
+        let txt = bR[q].textContent.split("|").slice(2);
+        txt.splice(1, 2);
+        txt = txt[0];
+        let content = bR[q].innerHTML.split("");
+        let incr = Math.round(txt.length / row1.length);
+        for (let i = 0; i < row1.length; i++) {
+          for (let z = 0; z < txt.length; z++) {
+            if (z == incr * (i + 1) && i != row1.length - 1) {
+              if (q == 0)
+                content[
+                  z + xOffset + inOffset + "<span class='overscore'>".length
+                ] = "|";
+              else if (q == bR.length - 1)
+                content[
+                  z + xOffset + inOffset + "<span class='underscore'>".length
+                ] = "|";
+              else content[z + xOffset + inOffset] = "|";
+            }
+          }
+        }
+        bR[q].innerHTML = content.join("");
       }
     }
   }
@@ -285,7 +331,6 @@ window.addEventListener("DOMContentLoaded", function () {
 window.onresize = build();
 function build() {
   objs = Array.from(get("main").querySelectorAll("*"));
-  console.log(objs);
   objs.splice(objs.indexOf(canvas), 1);
   for (let i = 0; i < objs.length; i++) {
     if (
@@ -494,19 +539,19 @@ function build() {
   objs.sort(() => {
     return -1;
   });
-  for (let q = 0; q < objs.length; q++) {
-    let config = {
-      attributes: true,
-      attributeFilter: ["class", "style"],
-    };
-    let observer = new MutationObserver((record) => {
-      console.log(record[0].target);
-      // for (let i = 0; i < objs.length; i++) {
-      //   if (objs[i].e == record[0].target) objs[i].init();
-      // }
-    });
-    observer.observe(objs[q].e, config);
-  }
+  // for (let q = 0; q < objs.length; q++) {
+  //   let config = {
+  //     attributes: true,
+  //     attributeFilter: ["class", "style"],
+  //   };
+  // let observer = new MutationObserver((record) => {
+  //   console.log(record[0].target);
+  //   // for (let i = 0; i < objs.length; i++) {
+  //   //   if (objs[i].e == record[0].target) objs[i].init();
+  //   // }
+  // });
+  // observer.observe(objs[q].e, config);
+  // }
 }
 function visualDivide() {
   for (let i = 0; i < objs.length; i++) {
