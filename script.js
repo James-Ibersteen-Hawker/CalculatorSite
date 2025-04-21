@@ -35,6 +35,7 @@ class Calculator {
     let ex1H = get("#temp").offsetHeight;
     let xOffset;
     let wNum;
+    let hNum;
     get("#temp").remove();
     //topborder
     {
@@ -60,6 +61,7 @@ class Calculator {
       let nH = Math.round(window.innerHeight * this.height);
       if (nH < this.minHeight) nH = this.minHeight;
       let amountV = Math.round(nH / (ex1H * 3)) - 3;
+      hNum = amountV;
       for (let i = 0; i < amountV; i++) {
         let row = document.createElement("span");
         row.id = `sB${i}`;
@@ -88,11 +90,35 @@ class Calculator {
     {
       //top of window
       let w = Math.round(wNum * this.wWidth);
-      alert(w);
-      let rW = Math.round(wNum - w / 2);
-      let top = get("#tB").textContent.split("");
-      top[2] = 3;
-      get("#tB").textContent = top.join("");
+      let rW = Math.round((wNum - w) / 2);
+      let top = get("#sB0").textContent.split("");
+      let wOffset = xOffset + rW;
+      let t = wOffset + w;
+      for (let i = 0; i < t; i++) {
+        if (i == wOffset) top.splice(i, 0, "<span id='interspan'>");
+        if (i == wOffset + w - 1) top.splice(i, 0, "</span>");
+      }
+      get("#sB0").innerHTML = top.join("");
+      let h = Math.round(hNum / (this.wHeight / (ex1H * 3)));
+      let inters = [];
+      for (let i = 1; i < h; i++) {
+        inters.push(get(`#sB${i}`));
+      }
+      for (let i = 0; i < inters.length; i++) {
+        let current = inters[i].textContent.split("");
+        for (let q = 0; q < t; q++) {
+          if (q == wOffset || q == t - 3) current[q] = "|";
+          else if (q > wOffset && q < t - 3) current[q] = " ";
+        }
+        inters[i].innerHTML = current.join("");
+      }
+      let bottom = get(`#sB${1 + inters.length}`);
+      let txt = bottom.textContent.split("");
+      for (let q = 0; q < t; q++) {
+        if (q == wOffset) txt.splice(q, 0, "<span id='bInterspan'>");
+        else if (q == t - 1) txt.splice(q, 0, "</span>");
+      }
+      bottom.innerHTML = txt.join("");
     }
   }
   solve(equation) {
@@ -109,7 +135,7 @@ let CALC = new Calculator(
   0.7,
   600,
   0.9,
-  100
+  120
 );
 window.addEventListener("DOMContentLoaded", function () {
   build();

@@ -112,3 +112,9 @@ p {
 #bB {
   margin-top: -10px;
 }
+#interspan {
+  text-decoration: underline;
+}
+#bInterspan {
+  text-decoration: overline;
+}
