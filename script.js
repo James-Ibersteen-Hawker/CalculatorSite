@@ -12,7 +12,17 @@ class Calculator {
   minHeight;
   wWidth;
   wHeight;
-  constructor(buttons, width, minWidth, height, minHeight, wWidth, wHeight) {
+  bHeight;
+  constructor(
+    buttons,
+    width,
+    minWidth,
+    height,
+    minHeight,
+    wWidth,
+    wHeight,
+    bHeight
+  ) {
     this.buttons = buttons;
     this.width = width;
     this.minWidth = minWidth;
@@ -20,6 +30,7 @@ class Calculator {
     this.minHeight = minHeight;
     this.wWidth = wWidth;
     this.wHeight = wHeight;
+    this.bHeight = bHeight;
   }
   make() {
     let cont = get("#calculator");
@@ -36,6 +47,10 @@ class Calculator {
     let xOffset;
     let wNum;
     let hNum;
+    let inOffset;
+    let bodyNum;
+    let endW;
+    let wH;
     get("#temp").remove();
     //topborder
     {
@@ -90,7 +105,9 @@ class Calculator {
     {
       //top of window
       let w = Math.round(wNum * this.wWidth);
+      bodyNum = w;
       let rW = Math.round((wNum - w) / 2);
+      inOffset = rW;
       let top = get("#sB0").textContent.split("");
       let wOffset = xOffset + rW;
       let t = wOffset + w;
@@ -100,10 +117,12 @@ class Calculator {
       }
       get("#sB0").innerHTML = top.join("");
       let h = Math.round(hNum / (this.wHeight / (ex1H * 3)));
+      wH = h;
       let inters = [];
       for (let i = 1; i < h; i++) {
         inters.push(get(`#sB${i}`));
       }
+      endW = inters.length + 1;
       for (let i = 0; i < inters.length; i++) {
         let current = inters[i].textContent.split("");
         for (let q = 0; q < t; q++) {
@@ -120,6 +139,31 @@ class Calculator {
       }
       bottom.innerHTML = txt.join("");
     }
+    //buttons
+    {
+      let row1 = this.buttons.slice(0, this.buttons.indexOf(false));
+      let w = bodyNum - inOffset * 2;
+      let bWidth = w / row1.length;
+      let h = hNum - wH;
+      let inters = [];
+      for (let i = endW + 1; i < h + endW - 1; i++) {
+        inters.push(get(`#sB${i}`));
+      }
+      let firstR = inters.slice(0, Math.floor(inters.length / 2));
+      let secondR = inters.slice(Math.floor(inters.length / 2), inters.length);
+      for (let i = 0; i < row1.length; i++) {
+        for (let q = 0; q < firstR.length; q++) {
+          let current = firstR[q].textContent.split("");
+          firstR[q].textContent = "a";
+        }
+      }
+      for (let i = 0; i < row1.length; i++) {
+        for (let q = 0; q < secondR.length; q++) {
+          let current = secondR[q].textContent.split("");
+          secondR[q].textContent = "b";
+        }
+      }
+    }
   }
   solve(equation) {
     alert(eval(equation));
@@ -135,7 +179,8 @@ let CALC = new Calculator(
   0.7,
   600,
   0.9,
-  120
+  120,
+  0.5
 );
 window.addEventListener("DOMContentLoaded", function () {
   build();
