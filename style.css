@@ -1,5 +1,6 @@
 * {
   z-index: 1;
+  user-select: none;
 }
 html {
   width: 100%;
@@ -123,9 +124,9 @@ p {
 .underscore {
   text-decoration: underline;
 }
-/* .box1topRow {
+/*.box1topRow {
   background: rgba(255, 0, 0, 0.8);
-}
+} 
 .box2topRow {
   background: rgba(0, 255, 0, 0.3);
 }

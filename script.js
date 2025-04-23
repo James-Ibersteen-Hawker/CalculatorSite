@@ -314,6 +314,7 @@ class Calculator {
           }
           bg[q] = elem.join("");
         }
+        btns[i].classList.remove("c100-100-100-0");
         btns[i].classList.add(`c${bg[0]}-${bg[1]}-${bg[2]}-${bg[3]}`);
         btns[i].classList.add(
           `h${bg[0]}-${bg[1]}-${bg[2]}-${Number(bg[3]) + 0.2}`
@@ -621,7 +622,9 @@ function buildSetup() {
       let c = objs[i].tBounds;
       if (event.x >= c.tL.x && event.x <= c.tR.x) {
         if (event.y >= c.tL.y && event.y <= c.bL.y) {
-          objs[i].e.classList.add(objs[i].cL);
+          // objs[i].e.classList.add(objs[i].cL);
+          objs[i].e.classList.add("syncClick");
+          clickFocus(objs[i]);
           objs[i].inFunc();
         }
       }
@@ -679,6 +682,28 @@ function syncFocus(target) {
         "style",
         `background: rgba(${objs[i].bg.join(",")});`
       );
+    }
+  }
+}
+function clickFocus(target) {
+  let classes = target.e.classList;
+  let idef;
+  for (let i = 0; i < classes.length; i++) {
+    if (classes[i].includes("box") && classes[i].includes("Row")) {
+      idef = classes[i];
+      break;
+    }
+  }
+  let btnBits = Array.from(document.querySelectorAll(`.${idef}`));
+  let objCollection = [];
+  for (let i = 0; i < objs.length; i++) {
+    for (let q = 0; q < btnBits.length; q++) {
+      if (objs[i].e == btnBits[q]) objCollection.push(objs[i]);
+    }
+  }
+  if (target.e.classList.contains("syncClick")) {
+    for (let i = 0; i < objCollection.length; i++) {
+      objCollection[i].e.classList.add(objCollection[i].cL);
     }
   }
 }
