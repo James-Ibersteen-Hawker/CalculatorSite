@@ -218,13 +218,19 @@ class Calculator {
         for (let i = 0; i < t; i++) {
           if (i == wOffset || i == t - 3) {
             if (q == 0) {
-              if (i == wOffset) txt[i] = "<span class='overscore'>|";
-              if (i == t - 3) txt[i] = "|</span>";
+              if (i == wOffset)
+                txt[i] =
+                  "<span class='overscore'>|<span class='box1downRow' onclick='test()'>";
+              if (i == t - 3) txt[i] = "</span>|</span>";
             } else if (q == bR.length - 1) {
-              if (i == wOffset) txt[i] = "<span class='underscore'>|";
-              if (i == t - 3) txt[i] = "|</span>";
+              if (i == wOffset)
+                txt[i] =
+                  "<span class='underscore'>|<span class='box1downRow' onclick='test()'>";
+              if (i == t - 3) txt[i] = "</span>|</span>";
             } else {
-              txt[i] = "|";
+              if (i == wOffset)
+                txt[i] = "|<span class='box1downRow' onclick='test()'>";
+              else if (i == t - 3) txt[i] = "</span>|";
             }
           } else if (i > wOffset && i < t - 3) txt[i] = " ";
         }
@@ -241,13 +247,33 @@ class Calculator {
             if (z == incr * (i + 1) && i != row1.length - 1) {
               if (q == 0)
                 content[
-                  z + xOffset + inOffset + "<span class='overscore'>".length
-                ] = "|";
+                  z +
+                    xOffset +
+                    inOffset +
+                    "<span class='overscore'><span class='box1downRow' onclick='test()'>"
+                      .length
+                ] = `</span>|<span class="box${
+                  i + 2
+                }downRow" onclick="test()">`;
               else if (q == bR.length - 1)
                 content[
-                  z + xOffset + inOffset + "<span class='underscore'>".length
-                ] = "|";
-              else content[z + xOffset + inOffset] = "|";
+                  z +
+                    xOffset +
+                    inOffset +
+                    "<span class='underscore'><span class='box1downRow' onclick='test()'>"
+                      .length
+                ] = `</span>|<span class="box${
+                  i + 2
+                }downRow" onclick="test()">`;
+              else
+                content[
+                  z +
+                    xOffset +
+                    inOffset +
+                    "<span class='box1downRow' onclick='test()'>".length
+                ] = `</span>|<span class="box${
+                  i + 2
+                }downRow" onclick="test()">`;
             }
           }
         }
