@@ -159,16 +159,16 @@ class Calculator {
             if (q == 0) {
               if (i == wOffset)
                 txt[i] =
-                  "<span class='overscore'>|<span class='box1topRow' onclick='test()'>";
+                  "<span class='overscore'>|<span class='box1topRow' onclick='btnFunction()'>";
               if (i == t - 3) txt[i] = "</span>|</span>";
             } else if (q == fR.length - 1) {
               if (i == wOffset)
                 txt[i] =
-                  "<span class='underscore'>|<span class='box1topRow' onclick='test()'>";
+                  "<span class='underscore'>|<span class='box1topRow' onclick='btnFunction()'>";
               if (i == t - 3) txt[i] = "</span>|</span>";
             } else {
               if (i == wOffset)
-                txt[i] = "|<span class='box1topRow' onclick='test()'>";
+                txt[i] = "|<span class='box1topRow' onclick='btnFunction()'>";
               else if (i == t - 3) txt[i] = "</span>|";
             }
           } else if (i > wOffset && i < t - 3) txt[i] = " ";
@@ -189,24 +189,30 @@ class Calculator {
                   z +
                     xOffset +
                     inOffset +
-                    "<span class='overscore'><span class='box1topRow' onclick='test()'>"
+                    "<span class='overscore'><span class='box1topRow' onclick='btnFunction()'>"
                       .length
-                ] = `</span>|<span class="box${i + 2}topRow" onclick="test()">`;
+                ] = `</span>|<span class="box${
+                  i + 2
+                }topRow" onclick="btnFunction()">`;
               else if (q == fR.length - 1)
                 content[
                   z +
                     xOffset +
                     inOffset +
-                    "<span class='underscore'><span class='box1topRow' onclick='test()'>"
+                    "<span class='underscore'><span class='box1topRow' onclick='btnFunction()'>"
                       .length
-                ] = `</span>|<span class="box${i + 2}topRow" onclick="test()">`;
+                ] = `</span>|<span class="box${
+                  i + 2
+                }topRow" onclick="btnFunction()">`;
               else
                 content[
                   z +
                     xOffset +
                     inOffset +
-                    "<span class='box1topRow' onclick='test()'>".length
-                ] = `</span>|<span class="box${i + 2}topRow" onclick="test()">`;
+                    "<span class='box1topRow' onclick='btnFunction()'>".length
+                ] = `</span>|<span class="box${
+                  i + 2
+                }topRow" onclick="btnFunction()">`;
             }
           }
         }
@@ -220,16 +226,16 @@ class Calculator {
             if (q == 0) {
               if (i == wOffset)
                 txt[i] =
-                  "<span class='overscore'>|<span class='box1downRow' onclick='test()'>";
+                  "<span class='overscore'>|<span class='box1downRow' onclick='btnFunction()'>";
               if (i == t - 3) txt[i] = "</span>|</span>";
             } else if (q == bR.length - 1) {
               if (i == wOffset)
                 txt[i] =
-                  "<span class='underscore'>|<span class='box1downRow' onclick='test()'>";
+                  "<span class='underscore'>|<span class='box1downRow' onclick='btnFunction()'>";
               if (i == t - 3) txt[i] = "</span>|</span>";
             } else {
               if (i == wOffset)
-                txt[i] = "|<span class='box1downRow' onclick='test()'>";
+                txt[i] = "|<span class='box1downRow' onclick='btnFunction()'>";
               else if (i == t - 3) txt[i] = "</span>|";
             }
           } else if (i > wOffset && i < t - 3) txt[i] = " ";
@@ -250,36 +256,71 @@ class Calculator {
                   z +
                     xOffset +
                     inOffset +
-                    "<span class='overscore'><span class='box1downRow' onclick='test()'>"
+                    "<span class='overscore'><span class='box1downRow' onclick='btnFunction()'>"
                       .length
                 ] = `</span>|<span class="box${
                   i + 2
-                }downRow" onclick="test()">`;
+                }downRow" onclick="btnFunction()">`;
               else if (q == bR.length - 1)
                 content[
                   z +
                     xOffset +
                     inOffset +
-                    "<span class='underscore'><span class='box1downRow' onclick='test()'>"
+                    "<span class='underscore'><span class='box1downRow' onclick='btnFunction()'>"
                       .length
                 ] = `</span>|<span class="box${
                   i + 2
-                }downRow" onclick="test()">`;
+                }downRow" onclick="btnFunction()">`;
               else
                 content[
                   z +
                     xOffset +
                     inOffset +
-                    "<span class='box1downRow' onclick='test()'>".length
+                    "<span class='box1downRow' onclick='btnFunction()'>".length
                 ] = `</span>|<span class="box${
                   i + 2
-                }downRow" onclick="test()">`;
+                }downRow" onclick="btnFunction()">`;
             }
           }
         }
         bR[q].innerHTML = content.join("");
       }
     }
+    //assign color classes for build
+    {
+      let btns = Array.from(
+        document.querySelectorAll("span[onclick^='btnFunction(']")
+      );
+      for (let i = 0; i < btns.length; i++) {
+        let bg = window
+          .getComputedStyle(btns[i])
+          .getPropertyValue("background");
+        bg = bg.split(")")[0];
+        bg = bg.split("(")[1];
+        bg = bg.split(" ").join("").split(",");
+        if (bg.length == 3) bg.push("1");
+        for (let q = 0; q < bg.length; q++) {
+          let elem = bg[q].split("");
+          for (let z = 0; z < elem.length; z++) {
+            elem[z] = elem[z].toString();
+          }
+          if (elem.length != 3 && q != bg.length - 1) {
+            if (elem.length == 2) {
+              elem.splice(0, 0, "0");
+            } else {
+              elem.splice(0, 0, "0");
+              elem.splice(0, 0, "0");
+            }
+          }
+          bg[q] = elem.join("");
+        }
+        btns[i].classList.add(`c${bg[0]}-${bg[1]}-${bg[2]}-${bg[3]}`);
+        btns[i].classList.add(
+          `h${bg[0]}-${bg[1]}-${bg[2]}-${Number(bg[3]) + 0.2}`
+        );
+      }
+    }
+    buildSetup();
   }
   solve(equation) {
     alert(eval(equation));
@@ -299,49 +340,6 @@ let CALC = new Calculator(
   0.5
 );
 window.addEventListener("DOMContentLoaded", function () {
-  build();
-  canvas.addEventListener("mousedown", (event) => {
-    for (let i = 0; i < objs.length; i++) {
-      let c = objs[i].tBounds;
-      if (event.x >= c.tL.x && event.x <= c.tR.x) {
-        if (event.y >= c.tL.y && event.y <= c.bL.y) {
-          objs[i].e.classList.add(objs[i].cL);
-          objs[i].inFunc();
-        }
-      }
-    }
-  });
-  canvas.addEventListener("mouseup", () => {
-    for (let i = 0; i < objs.length; i++) {
-      if (objs[i].e.classList.contains(objs[i].cL))
-        objs[i].e.classList.remove(objs[i].cL);
-    }
-  });
-  canvas.addEventListener("mousemove", (event) => {
-    for (let i = 0; i < objs.length; i++) {
-      let c = objs[i].tBounds;
-      if (event.x >= c.tL.x && event.x <= c.tR.x) {
-        if (event.y >= c.tL.y && event.y <= c.bL.y) {
-          if (objs[i].hasFunc == true) {
-            canvas.classList.add("pointer");
-            if (!objs[i].e.classList.contains("focus")) {
-              objs[i].e.removeAttribute("style");
-              objs[i].e.classList.add("focus");
-            }
-            break;
-          }
-        }
-      }
-      canvas.classList.remove("pointer");
-      if (objs[i].e.classList.contains("focus")) {
-        objs[i].e.classList.remove("focus");
-        objs[i].e.setAttribute(
-          "style",
-          `background: rgba(${objs[i].bg.join(",")});`
-        );
-      }
-    }
-  });
   let m1 = " JavaScript Terminal Calculator";
   type(m1, get("#text"));
   begin();
@@ -374,7 +372,6 @@ window.addEventListener("DOMContentLoaded", function () {
     }, " Type /begin to start".length * typeOffset + 1000);
   }, m1.length * typeOffset + 1000);
 });
-window.onresize = build();
 function build() {
   objs = Array.from(get("main").querySelectorAll("*"));
   objs.splice(objs.indexOf(canvas), 1);
@@ -585,19 +582,19 @@ function build() {
   objs.sort(() => {
     return -1;
   });
-  // for (let q = 0; q < objs.length; q++) {
-  //   let config = {
-  //     attributes: true,
-  //     attributeFilter: ["class", "style"],
-  //   };
-  // let observer = new MutationObserver((record) => {
-  //   console.log(record[0].target);
-  //   // for (let i = 0; i < objs.length; i++) {
-  //   //   if (objs[i].e == record[0].target) objs[i].init();
-  //   // }
-  // });
-  // observer.observe(objs[q].e, config);
-  // }
+  for (let q = 0; q < objs.length; q++) {
+    let config = {
+      attributes: true,
+      attributeFilter: ["class", "style"],
+    };
+    let observer = new MutationObserver((record) => {
+      console.log(record[0].target);
+      // for (let i = 0; i < objs.length; i++) {
+      //   if (objs[i].e == record[0].target) objs[i].init();
+      // }
+    });
+    observer.observe(objs[q].e, config);
+  }
 }
 function visualDivide() {
   for (let i = 0; i < objs.length; i++) {
@@ -606,8 +603,8 @@ function visualDivide() {
     ctx.stroke();
   }
 }
-function test() {
-  console.log("testing");
+function btnFunction() {
+  console.log("testing buttonFunction!");
 }
 function get(arg) {
   return document.querySelector(arg);
@@ -629,4 +626,50 @@ function begin() {
   get("#intro").classList.add("d-none");
   get("#textInput1").classList.add("d-none");
   CALC.make();
+}
+function buildSetup() {
+  build();
+  canvas.addEventListener("mousedown", (event) => {
+    for (let i = 0; i < objs.length; i++) {
+      let c = objs[i].tBounds;
+      if (event.x >= c.tL.x && event.x <= c.tR.x) {
+        if (event.y >= c.tL.y && event.y <= c.bL.y) {
+          objs[i].e.classList.add(objs[i].cL);
+          objs[i].inFunc();
+        }
+      }
+    }
+  });
+  canvas.addEventListener("mouseup", () => {
+    for (let i = 0; i < objs.length; i++) {
+      if (objs[i].e.classList.contains(objs[i].cL))
+        objs[i].e.classList.remove(objs[i].cL);
+    }
+  });
+  canvas.addEventListener("mousemove", (event) => {
+    for (let i = 0; i < objs.length; i++) {
+      let c = objs[i].tBounds;
+      if (event.x >= c.tL.x && event.x <= c.tR.x) {
+        if (event.y >= c.tL.y && event.y <= c.bL.y) {
+          if (objs[i].hasFunc == true) {
+            canvas.classList.add("pointer");
+            if (!objs[i].e.classList.contains("focus")) {
+              objs[i].e.removeAttribute("style");
+              objs[i].e.classList.add("focus");
+            }
+            break;
+          }
+        }
+      }
+      canvas.classList.remove("pointer");
+      if (objs[i].e.classList.contains("focus")) {
+        objs[i].e.classList.remove("focus");
+        objs[i].e.setAttribute(
+          "style",
+          `background: rgba(${objs[i].bg.join(",")});`
+        );
+      }
+    }
+  });
+  window.addEventListener("resize", build());
 }

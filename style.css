@@ -124,11 +124,14 @@ p {
   text-decoration: underline;
 }
 .box1topRow {
-  background: red;
+  background: rgba(255, 0, 0, 0.8);
 }
 .box2topRow {
-  background: green;
+  background: rgba(0, 255, 0, 0.3);
 }
 .box3downRow {
-  background: yellow;
+  background: rgba(0, 0, 255, 0.6);
+}
+span[onclick^="btnFunction("] {
+  transition: 0.25s;
 }
