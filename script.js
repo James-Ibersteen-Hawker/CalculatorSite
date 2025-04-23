@@ -582,19 +582,6 @@ function build() {
   objs.sort(() => {
     return -1;
   });
-  for (let q = 0; q < objs.length; q++) {
-    let config = {
-      attributes: true,
-      attributeFilter: ["class", "style"],
-    };
-    let observer = new MutationObserver((record) => {
-      console.log(record[0].target);
-      // for (let i = 0; i < objs.length; i++) {
-      //   if (objs[i].e == record[0].target) objs[i].init();
-      // }
-    });
-    observer.observe(objs[q].e, config);
-  }
 }
 function visualDivide() {
   for (let i = 0; i < objs.length; i++) {
@@ -653,23 +640,45 @@ function buildSetup() {
         if (event.y >= c.tL.y && event.y <= c.bL.y) {
           if (objs[i].hasFunc == true) {
             canvas.classList.add("pointer");
-            if (!objs[i].e.classList.contains("focus")) {
-              objs[i].e.removeAttribute("style");
-              objs[i].e.classList.add("focus");
+            if (!objs[i].e.classList.contains("syncFocus")) {
+              objs[i].e.classList.add("syncFocus");
+              syncFocus(objs[i].e);
             }
             break;
           }
         }
       }
       canvas.classList.remove("pointer");
-      if (objs[i].e.classList.contains("focus")) {
-        objs[i].e.classList.remove("focus");
-        objs[i].e.setAttribute(
-          "style",
-          `background: rgba(${objs[i].bg.join(",")});`
-        );
+      if (objs[i].e.classList.contains("syncFocus")) {
+        objs[i].e.classList.remove("syncFocus");
+        syncFocus(objs[i].e);
       }
     }
   });
   window.addEventListener("resize", build());
+}
+function syncFocus(target) {
+  let classes = target.classList;
+  let idef;
+  for (let i = 0; i < classes.length; i++) {
+    if (classes[i].includes("box") && classes[i].includes("Row")) {
+      idef = classes[i];
+      break;
+    }
+  }
+  let btnBits = Array.from(document.querySelectorAll(`.${idef}`));
+  if (target.classList.contains("syncFocus")) {
+    for (let i = 0; i < btnBits.length; i++) {
+      btnBits[i].removeAttribute("style");
+      btnBits[i].classList.add("focus");
+    }
+  } else {
+    for (let i = 0; i < btnBits.length; i++) {
+      btnBits[i].classList.remove("focus");
+      btnBits[i].setAttribute(
+        "style",
+        `background: rgba(${objs[i].bg.join(",")});`
+      );
+    }
+  }
 }

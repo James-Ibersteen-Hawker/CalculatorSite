@@ -123,7 +123,7 @@ p {
 .underscore {
   text-decoration: underline;
 }
-.box1topRow {
+/* .box1topRow {
   background: rgba(255, 0, 0, 0.8);
 }
 .box2topRow {
@@ -131,7 +131,11 @@ p {
 }
 .box3downRow {
   background: rgba(0, 0, 255, 0.6);
-}
+} */
 span[onclick^="btnFunction("] {
   transition: 0.25s;
 }
+/* .SPAN25.focus,
+.SPAN41.focus {
+  background: black !important;
+} */
