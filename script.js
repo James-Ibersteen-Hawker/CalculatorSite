@@ -159,16 +159,16 @@ class Calculator {
             if (q == 0) {
               if (i == wOffset)
                 txt[i] =
-                  "<span class='overscore'>|<span class='box1topRow' onclick='btnFunction()'>";
+                  "<span class='overscore'>|<span class='box1topRow' onclick='btnFunction(0)'>";
               if (i == t - 3) txt[i] = "</span>|</span>";
             } else if (q == fR.length - 1) {
               if (i == wOffset)
                 txt[i] =
-                  "<span class='underscore'>|<span class='box1topRow' onclick='btnFunction()'>";
+                  "<span class='underscore'>|<span class='box1topRow' onclick='btnFunction(0)'>";
               if (i == t - 3) txt[i] = "</span>|</span>";
             } else {
               if (i == wOffset)
-                txt[i] = "|<span class='box1topRow' onclick='btnFunction()'>";
+                txt[i] = "|<span class='box1topRow' onclick='btnFunction(0)'>";
               else if (i == t - 3) txt[i] = "</span>|";
             }
           } else if (i > wOffset && i < t - 3) txt[i] = " ";
@@ -189,30 +189,30 @@ class Calculator {
                   z +
                     xOffset +
                     inOffset +
-                    "<span class='overscore'><span class='box1topRow' onclick='btnFunction()'>"
+                    "<span class='overscore'><span class='box1topRow' onclick='btnFunction(x)'>"
                       .length
                 ] = `</span>|<span class="box${
                   i + 2
-                }topRow" onclick="btnFunction()">`;
+                }topRow" onclick="btnFunction(${i + 1})">`;
               else if (q == fR.length - 1)
                 content[
                   z +
                     xOffset +
                     inOffset +
-                    "<span class='underscore'><span class='box1topRow' onclick='btnFunction()'>"
+                    "<span class='underscore'><span class='box1topRow' onclick='btnFunction(x)'>"
                       .length
                 ] = `</span>|<span class="box${
                   i + 2
-                }topRow" onclick="btnFunction()">`;
+                }topRow" onclick="btnFunction(${i + 1})">`;
               else
                 content[
                   z +
                     xOffset +
                     inOffset +
-                    "<span class='box1topRow' onclick='btnFunction()'>".length
+                    "<span class='box1topRow' onclick='btnFunction(x)'>".length
                 ] = `</span>|<span class="box${
                   i + 2
-                }topRow" onclick="btnFunction()">`;
+                }topRow" onclick="btnFunction(${i + 1})">`;
             }
           }
         }
@@ -226,16 +226,16 @@ class Calculator {
             if (q == 0) {
               if (i == wOffset)
                 txt[i] =
-                  "<span class='overscore'>|<span class='box1downRow' onclick='btnFunction()'>";
+                  "<span class='overscore'>|<span class='box1downRow' onclick='btnFunction(5)'>";
               if (i == t - 3) txt[i] = "</span>|</span>";
             } else if (q == bR.length - 1) {
               if (i == wOffset)
                 txt[i] =
-                  "<span class='underscore'>|<span class='box1downRow' onclick='btnFunction()'>";
+                  "<span class='underscore'>|<span class='box1downRow' onclick='btnFunction(5)'>";
               if (i == t - 3) txt[i] = "</span>|</span>";
             } else {
               if (i == wOffset)
-                txt[i] = "|<span class='box1downRow' onclick='btnFunction()'>";
+                txt[i] = "|<span class='box1downRow' onclick='btnFunction(5)'>";
               else if (i == t - 3) txt[i] = "</span>|";
             }
           } else if (i > wOffset && i < t - 3) txt[i] = " ";
@@ -251,35 +251,35 @@ class Calculator {
         for (let i = 0; i < row1.length; i++) {
           for (let z = 0; z < txt.length; z++) {
             if (z == incr * (i + 1) && i != row1.length - 1) {
-              if (q == 0)
+              if (q == 0) {
                 content[
                   z +
                     xOffset +
                     inOffset +
-                    "<span class='overscore'><span class='box1downRow' onclick='btnFunction()'>"
+                    "<span class='overscore'><span class='box1downRow' onclick='btnFunction(x)'>"
                       .length
                 ] = `</span>|<span class="box${
                   i + 2
-                }downRow" onclick="btnFunction()">`;
-              else if (q == bR.length - 1)
+                }downRow" onclick="btnFunction(${i + 6})">`;
+              } else if (q == bR.length - 1)
                 content[
                   z +
                     xOffset +
                     inOffset +
-                    "<span class='underscore'><span class='box1downRow' onclick='btnFunction()'>"
+                    "<span class='underscore'><span class='box1downRow' onclick='btnFunction(x)'>"
                       .length
                 ] = `</span>|<span class="box${
                   i + 2
-                }downRow" onclick="btnFunction()">`;
+                }downRow" onclick="btnFunction(${i + 6})">`;
               else
                 content[
                   z +
                     xOffset +
                     inOffset +
-                    "<span class='box1downRow' onclick='btnFunction()'>".length
+                    "<span class='box1downRow' onclick='btnFunction(x)'>".length
                 ] = `</span>|<span class="box${
                   i + 2
-                }downRow" onclick="btnFunction()">`;
+                }downRow" onclick="btnFunction(${i + 6})">`;
             }
           }
         }
@@ -314,7 +314,6 @@ class Calculator {
           }
           bg[q] = elem.join("");
         }
-        btns[i].classList.remove("c100-100-100-0");
         btns[i].classList.add(`c${bg[0]}-${bg[1]}-${bg[2]}-${bg[3]}`);
         btns[i].classList.add(
           `h${bg[0]}-${bg[1]}-${bg[2]}-${Number(bg[3]) + 0.2}`
@@ -328,6 +327,27 @@ class Calculator {
   }
   btnPress(btn) {
     alert(this.buttons[btn]);
+    switch (selector) {
+      case 0:
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      case 5:
+        break;
+      case 6:
+        break;
+      case 7:
+        break;
+      case 8:
+        break;
+      default:
+        alert("default");
+        break;
+    }
   }
 }
 let CALC = new Calculator(
@@ -591,8 +611,8 @@ function visualDivide() {
     ctx.stroke();
   }
 }
-function btnFunction() {
-  console.log("testing buttonFunction!");
+function btnFunction(selector) {
+  CALC.btnPress(selector);
 }
 function get(arg) {
   return document.querySelector(arg);
