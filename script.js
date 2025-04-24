@@ -286,6 +286,31 @@ class Calculator {
         bR[q].innerHTML = content.join("");
       }
     }
+    //btn graphics
+    {
+      let divs = Array.from(
+        document.querySelectorAll("span[onclick^='btnFunction(']")
+      );
+      let rows = [];
+      let divClasses = [];
+      for (let i = 0; i < divs.length; i++) {
+        let classA = Array.from(divs[i].classList);
+        for (let i = 0; i < classA.length; i++) {
+          if (classA[i].includes("box")) {
+            classA = classA[i];
+            break;
+          }
+        }
+        divClasses.push(classA);
+      }
+      let num;
+
+      for (let i = 0; i < divClasses.length; i++) {
+        rows.push([divClasses[i]]);
+      }
+
+      console.log(rows);
+    }
     //assign color classes for build
     {
       let btns = Array.from(
@@ -326,8 +351,9 @@ class Calculator {
     alert(eval(equation));
   }
   btnPress(btn) {
-    alert(this.buttons[btn]);
-    switch (selector) {
+    // alert(this.buttons[btn]);
+    console.log(this.buttons[btn]);
+    switch (btn) {
       case 0:
         break;
       case 1:
@@ -706,24 +732,28 @@ function syncFocus(target) {
   }
 }
 function clickFocus(target) {
-  let classes = target.e.classList;
-  let idef;
-  for (let i = 0; i < classes.length; i++) {
-    if (classes[i].includes("box") && classes[i].includes("Row")) {
-      idef = classes[i];
-      break;
-    }
-  }
-  let btnBits = Array.from(document.querySelectorAll(`.${idef}`));
-  let objCollection = [];
-  for (let i = 0; i < objs.length; i++) {
-    for (let q = 0; q < btnBits.length; q++) {
-      if (objs[i].e == btnBits[q]) objCollection.push(objs[i]);
-    }
-  }
-  if (target.e.classList.contains("syncClick")) {
-    for (let i = 0; i < objCollection.length; i++) {
-      objCollection[i].e.classList.add(objCollection[i].cL);
-    }
-  }
+  // let classes = target.e.classList;
+  // let idef;
+  // for (let i = 0; i < classes.length; i++) {
+  //   if (classes[i].includes("box") && classes[i].includes("Row")) {
+  //     idef = classes[i];
+  //     break;
+  //   }
+  // }
+  // let btnBits = Array.from(document.querySelectorAll(`.${idef}`));
+  // let objCollection = [];
+  // for (let i = 0; i < objs.length; i++) {
+  //   for (let q = 0; q < btnBits.length; q++) {
+  //     if (objs[i].e == btnBits[q]) objCollection.push(objs[i]);
+  //   }
+  // }
+  // if (target.e.classList.contains("syncClick")) {
+  //   for (let i = 0; i < objCollection.length; i++) {
+  //     objCollection[i].e.classList.add(objCollection[i].cL);
+  //   }
+  // } else {
+  //   for (let i = 0; i < objCollection.length; i++) {
+  //     objCollection[i].e.classList.remove(objCollection[i].cL);
+  //   }
+  // }
 }
