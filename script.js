@@ -119,6 +119,7 @@ class Calculator {
       let inters = [];
       for (let i = 1; i < h; i++) {
         inters.push(get(`#sB${i}`));
+        get(`#sB${i}`).classList.add("windowBox");
       }
       endW = inters.length + 1;
       for (let i = 0; i < inters.length; i++) {
@@ -353,27 +354,44 @@ class Calculator {
   btnPress(btn) {
     // alert(this.buttons[btn]);
     console.log(this.buttons[btn]);
-    switch (btn) {
-      case 0:
-        break;
-      case 1:
-        break;
-      case 2:
-        break;
-      case 3:
-        break;
-      case 5:
-        break;
-      case 6:
-        break;
-      case 7:
-        break;
-      case 8:
-        break;
-      default:
-        alert("default");
-        break;
-    }
+    // switch (btn) {
+    //   case 0:
+    //     break;
+    //   case 1:
+    //     break;
+    //   case 2:
+    //     break;
+    //   case 3:
+    //     break;
+    //   case 5:
+    //     break;
+    //   case 6:
+    //     break;
+    //   case 7:
+    //     break;
+    //   case 8:
+    //     break;
+    //   default:
+    //     alert("default");
+    //     break;
+    // }
+    let display = Array.from(document.querySelectorAll(".windowBox"));
+    let textRow = display[Math.round(display.length / 2) - 1];
+    if (display.length == 1) textRow = display[0];
+    // textRow.textContent = "c";
+    //span injection
+    let txt = textRow.textContent.split("|");
+    let temp = txt;
+    txt = txt[2];
+    txt = txt.split("").slice(1);
+    this.maxChar = txt.length - 1;
+    this.inputNum = 0;
+    let index = txt.indexOf(" ");
+    txt[index] = this.buttons[btn];
+    if (this.buttons[btn] == "-1") temp[2] = txt.join("");
+    else temp[2] = " " + txt.join("");
+    textRow.textContent = temp.join("|");
+    this.inputNum++;
   }
 }
 let CALC = new Calculator(
