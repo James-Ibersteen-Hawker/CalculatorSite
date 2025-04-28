@@ -31,6 +31,8 @@ class Calculator {
     this.wWidth = wWidth;
     this.wHeight = wHeight;
     this.bHeight = bHeight;
+    this.inputNum = 0;
+    this.stack = [];
   }
   make() {
     let cont = get("#calculator");
@@ -348,54 +350,56 @@ class Calculator {
     }
     buildSetup();
   }
-  solve(equation) {
-    alert(eval(equation));
+  solve(btn) {
+    alert("solve");
+    let button = this.buttons[btn];
+    //stack arithmetic
   }
   btnPress(btn) {
-    // alert(this.buttons[btn]);
-    console.log(this.buttons[btn]);
-    // switch (btn) {
-    //   case 0:
-    //     break;
-    //   case 1:
-    //     break;
-    //   case 2:
-    //     break;
-    //   case 3:
-    //     break;
-    //   case 5:
-    //     break;
-    //   case 6:
-    //     break;
-    //   case 7:
-    //     break;
-    //   case 8:
-    //     break;
-    //   default:
-    //     alert("default");
-    //     break;
-    // }
+    let button = this.buttons[btn];
     let display = Array.from(document.querySelectorAll(".windowBox"));
     let textRow = display[Math.round(display.length / 2) - 1];
     if (display.length == 1) textRow = display[0];
-    // textRow.textContent = "c";
-    //span injection
     let txt = textRow.textContent.split("|");
     let temp = txt;
     txt = txt[2];
     txt = txt.split("").slice(1);
     this.maxChar = txt.length - 1;
-    this.inputNum = 0;
-    let index = txt.indexOf(" ");
-    txt[index] = this.buttons[btn];
-    if (this.buttons[btn] == "-1") temp[2] = txt.join("");
-    else temp[2] = " " + txt.join("");
-    textRow.textContent = temp.join("|");
-    this.inputNum++;
+    if (button != "Del" && button != "⇄" && button != "±") {
+      this.stack.push(button);
+      let index = txt.indexOf(" ");
+      txt[index] = button;
+      this.inputNum++;
+      temp[2] = " " + txt.join("");
+      textRow.textContent = temp.join("|");
+      if (button != 1) {
+        this.solve();
+        txt = new Array(txt.length);
+        txt.forEach((elem) => {
+          alert("in loop");
+          elem = " ";
+        });
+        temp[2] = " " + txt.join("");
+        textRow.textContent = temp.join("|");
+        alert("here");
+      }
+    } else if (button == "Del") {
+      this.stack.pop();
+    } else if (button == "⇄" && this.stack.length >= 2) {
+      let l = this.stack.length;
+      let temp = this.stack[l - 1];
+      this.stack[l - 1] = this.stack[l - 2];
+      this.stack[l - 2] = temp;
+    } else if (button == "±" && this.stack.length >= 1) {
+      let l = this.stack.length;
+      if (isNaN(Number(this.stack[l - 1])) == false) {
+        this.stack[l - 1] = -this.stack[l - 1];
+      }
+    }
   }
 }
 let CALC = new Calculator(
-  ["π", "^", "×", "-", false, "(", ")", "-1", "✓"],
+  ["Del", "+", "-", "/", false, "^", "⇄", "1", "±"],
   0.6,
   450,
   0.7,
