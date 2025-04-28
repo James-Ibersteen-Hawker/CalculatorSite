@@ -375,13 +375,11 @@ class Calculator {
       if (button != 1) {
         this.solve();
         txt = new Array(txt.length);
-        txt.forEach((elem) => {
-          alert("in loop");
-          elem = " ";
-        });
+        for (let i = 0; i < txt.length; i++) {
+          txt[i] = " ";
+        }
         temp[2] = " " + txt.join("");
         textRow.textContent = temp.join("|");
-        alert("here");
       }
     } else if (button == "Del") {
       this.stack.pop();
