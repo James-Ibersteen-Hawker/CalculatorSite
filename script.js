@@ -306,13 +306,37 @@ class Calculator {
         }
         divClasses.push(classA);
       }
-      let num;
-
+      //got classes
+      let num = 0;
       for (let i = 0; i < divClasses.length; i++) {
-        rows.push([divClasses[i]]);
+        if (!rows.includes(divClasses[i])) {
+          rows.push(divClasses[i]);
+          num++;
+        }
       }
-
-      console.log(rows);
+      rows = new Array(num);
+      for (let q = 0; q < rows.length; q++) {
+        rows[q] = [];
+      }
+      for (let i = 0; i < divs.length; i++) {
+        let classes = Array.from(divs[i].classList);
+        let Class;
+        for (let q = 0; q < classes.length; q++) {
+          if (classes[q].includes("box")) {
+            Class = classes[q];
+            break;
+          }
+        }
+        let subNum = 0;
+        for (let z = 0; z < Class.length; z++) {
+          if (isNaN(Number(Class[z])) == false) {
+            subNum = Number(Class[z] - 1);
+            break;
+          }
+        }
+        if (Class.includes("down")) subNum += 4;
+        rows[subNum].push(divs[i]);
+      }
     }
     //assign color classes for build
     {
