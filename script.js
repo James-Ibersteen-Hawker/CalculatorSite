@@ -337,6 +337,25 @@ class Calculator {
         if (Class.includes("down")) subNum += 4;
         rows[subNum].push(divs[i]);
       }
+      //btns now separate
+      for (let i = 0; i < rows.length; i++) {
+        let midrow = rows[i][Math.floor(rows[i].length / 2)];
+        let horiz = midrow.textContent.split("");
+        let index = Math.round(horiz.length / 2);
+        horiz[index] = this.buttons[i];
+        let classes = Array.from(midrow.classList);
+        for (let q = 0; q < classes.length; q++) {
+          if (classes[q].includes("down")) {
+            horiz[index] = this.buttons[i + 1];
+          }
+        }
+        if (this.buttons[i] == "Del") {
+          horiz[index - 1] = "D";
+          horiz[index] = "e";
+          horiz[index + 1] = "l";
+        }
+        midrow.textContent = horiz.join("");
+      }
     }
     //assign color classes for build
     {
@@ -421,7 +440,7 @@ class Calculator {
   }
 }
 let CALC = new Calculator(
-  ["Del", "+", "-", "/", false, "^", "⇄", "1", "±"],
+  ["Del", "+", "-", "/", false, "^", "<", "1", "±"],
   0.6,
   450,
   0.7,

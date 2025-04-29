@@ -15,7 +15,7 @@ body {
   overflow: clip;
   background-size: contain;
   padding: 10px;
-  font-family: "Courier New", Courier, monospace;
+  font-family: "Courier New", "Courier", monospace;
   font-weight: 900;
   color: black;
   box-sizing: border-box;
