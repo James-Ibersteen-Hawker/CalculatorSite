@@ -33,6 +33,7 @@ class Calculator {
     this.bHeight = bHeight;
     this.inputNum = 0;
     this.stack = [];
+    this.temp = "";
   }
   make() {
     let cont = get("#calculator");
@@ -341,7 +342,7 @@ class Calculator {
       for (let i = 0; i < rows.length; i++) {
         let midrow = rows[i][Math.floor(rows[i].length / 2)];
         let horiz = midrow.textContent.split("");
-        let index = Math.round(horiz.length / 2);
+        let index = Math.floor(horiz.length / 2);
         horiz[index] = this.buttons[i];
         let classes = Array.from(midrow.classList);
         for (let q = 0; q < classes.length; q++) {
@@ -349,10 +350,10 @@ class Calculator {
             horiz[index] = this.buttons[i + 1];
           }
         }
-        if (this.buttons[i] == "Del") {
-          horiz[index - 1] = "D";
-          horiz[index] = "e";
-          horiz[index + 1] = "l";
+        if (this.buttons[i] == "Clr") {
+          horiz[index - 1] = "C";
+          horiz[index] = "l";
+          horiz[index + 1] = "r";
         }
         midrow.textContent = horiz.join("");
       }
@@ -408,8 +409,8 @@ class Calculator {
     txt = txt[2];
     txt = txt.split("").slice(1);
     this.maxChar = txt.length - 1;
-    if (button != "Del" && button != "⇄" && button != "±") {
-      this.stack.push(button);
+    if (button != "Clr" && button != "<" && button != "±" && button != "⬇") {
+      this.temp += button;
       let index = txt.indexOf(" ");
       txt[index] = button;
       this.inputNum++;
@@ -424,9 +425,9 @@ class Calculator {
         temp[2] = " " + txt.join("");
         textRow.textContent = temp.join("|");
       }
-    } else if (button == "Del") {
+    } else if (button == "Clr") {
       this.stack.pop();
-    } else if (button == "⇄" && this.stack.length >= 2) {
+    } else if (button == "<" && this.stack.length >= 2) {
       let l = this.stack.length;
       let temp = this.stack[l - 1];
       this.stack[l - 1] = this.stack[l - 2];
@@ -436,11 +437,23 @@ class Calculator {
       if (isNaN(Number(this.stack[l - 1])) == false) {
         this.stack[l - 1] = -this.stack[l - 1];
       }
+      this.temp = -Number(this.temp);
+      //locate and alter
+      let subTxt = txt.join("").split(",");
+      let tempTxt = subTxt;
+      console.log(subTxt, tempTxt, tempTxt.join("").split(""));
+    } else if (button == "⬇" && this.temp.length >= 1) {
+      this.stack.push(Number(this.temp));
+      this.temp = "";
+      txt[txt.indexOf(" ")] = ",";
+      temp[2] = " " + txt.join("");
+      textRow.textContent = temp.join("|");
     }
+    // console.log(this.stack);
   }
 }
 let CALC = new Calculator(
-  ["Del", "+", "-", "/", false, "^", "<", "1", "±"],
+  ["Clr", "⬇", "-", "/", false, "^", "<", "1", "±"],
   0.6,
   450,
   0.7,
