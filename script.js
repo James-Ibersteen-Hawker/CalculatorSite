@@ -409,7 +409,7 @@ class Calculator {
     txt = txt[2];
     txt = txt.split("").slice(1);
     this.maxChar = txt.length - 1;
-    if (button != "Clr" && button != "<" && button != "±" && button != "⬇") {
+    if (button != "Clr" && button != "<" && button != "±" && button != "!") {
       this.temp += button;
       let index = txt.indexOf(" ");
       txt[index] = button;
@@ -442,7 +442,7 @@ class Calculator {
       let subTxt = txt.join("").split(",");
       let tempTxt = subTxt;
       console.log(subTxt, tempTxt, tempTxt.join("").split(""));
-    } else if (button == "⬇" && this.temp.length >= 1) {
+    } else if (button == "!" && this.temp.length >= 1) {
       this.stack.push(Number(this.temp));
       this.temp = "";
       txt[txt.indexOf(" ")] = ",";
@@ -453,7 +453,7 @@ class Calculator {
   }
 }
 let CALC = new Calculator(
-  ["Clr", "⬇", "-", "/", false, "^", "<", "1", "±"],
+  ["Clr", "!", "-", "/", false, "^", "<", "1", "±"],
   0.6,
   450,
   0.7,
