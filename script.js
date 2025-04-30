@@ -404,11 +404,11 @@ class Calculator {
       });
       let result;
       switch (button) {
-        case "-":
-          result = operands[0] - operands[1];
+        case "+":
+          result = operands[0] + operands[1];
           break;
-        case "/":
-          result = operands[0] / operands[1];
+        case "*":
+          result = operands[0] * operands[1];
           break;
         case "^":
           result = Math.pow(operands[0], operands[1]);
@@ -431,12 +431,6 @@ class Calculator {
     txt = txt.split("").slice(1);
     this.maxChar = txt.length - 1;
     if (button != "Clr" && button != "<" && button != "±" && button != "!") {
-      this.temp += button;
-      let index = txt.indexOf(" ");
-      txt[index] = button;
-      this.inputNum++;
-      temp[2] = " " + txt.join("");
-      textRow.textContent = temp.join("|");
       if (button != 1) {
         let result = this.solve(button).toString() + ",";
         result = result.split("");
@@ -449,6 +443,13 @@ class Calculator {
           txt.splice(0 + i, 0, result[i]);
         }
         console.log(txt);
+        temp[2] = " " + txt.join("");
+        textRow.textContent = temp.join("|");
+      } else {
+        this.temp += button;
+        let index = txt.indexOf(" ");
+        txt[index] = button;
+        this.inputNum++;
         temp[2] = " " + txt.join("");
         textRow.textContent = temp.join("|");
       }
@@ -506,7 +507,7 @@ class Calculator {
   }
 }
 let CALC = new Calculator(
-  ["Clr", "!", "-", "/", false, "^", "<", "1", "±"],
+  ["Clr", "!", "+", "*", false, "^", "<", "1", "±"],
   0.6,
   450,
   0.7,
