@@ -394,10 +394,31 @@ class Calculator {
     }
     buildSetup();
   }
-  solve(btn) {
-    alert("solve");
-    let button = this.buttons[btn];
-    //stack arithmetic
+  solve(button) {
+    if (this.stack.length < 2) alert("insufficient arguments");
+    else {
+      let operands = this.stack.slice(0, 2);
+      console.log(operands);
+      operands.forEach((elem) => {
+        elem = Number(elem);
+      });
+      let result;
+      switch (button) {
+        case "-":
+          result = operands[0] - operands[1];
+          break;
+        case "/":
+          result = operands[0] / operands[1];
+          break;
+        case "^":
+          result = Math.pow(operands[0], operands[1]);
+          break;
+      }
+      this.stack = [];
+      this.stack.push(result);
+      this.temp = "";
+      return result;
+    }
   }
   btnPress(btn) {
     let button = this.buttons[btn];
@@ -417,39 +438,70 @@ class Calculator {
       temp[2] = " " + txt.join("");
       textRow.textContent = temp.join("|");
       if (button != 1) {
-        this.solve();
-        txt = new Array(txt.length);
+        let result = this.solve(button).toString() + ",";
+        result = result.split("");
+        let diff = txt.length - result.length;
+        txt = new Array(diff);
         for (let i = 0; i < txt.length; i++) {
           txt[i] = " ";
         }
+        for (let i = 0; i < result.length; i++) {
+          txt.splice(0 + i, 0, result[i]);
+        }
+        console.log(txt);
         temp[2] = " " + txt.join("");
         textRow.textContent = temp.join("|");
       }
     } else if (button == "Clr") {
+      let subTxt = txt.join("").split(",");
+      let tempTxt = subTxt;
+      let index = subTxt.lastIndexOf(this.stack[this.stack.length - 1]);
       this.stack.pop();
+      console.log(index);
+      console.log(tempTxt[index].length);
+      tempTxt[index] = " ".repeat();
+      temp[2] = " " + tempTxt.join("");
+      textRow.textContent = temp.join("|");
     } else if (button == "<" && this.stack.length >= 2) {
       let l = this.stack.length;
-      let temp = this.stack[l - 1];
+      let temp1 = this.stack[l - 1];
       this.stack[l - 1] = this.stack[l - 2];
-      this.stack[l - 2] = temp;
+      this.stack[l - 2] = temp1;
+      let item1 = this.stack[l - 1].toString();
+      let item2 = this.stack[l - 2].toString();
+      let subTxt = txt.join("").split(",");
+      let tempTxt = subTxt;
+      let i1 = subTxt.lastIndexOf(item1);
+      let i2 = subTxt.lastIndexOf(item2);
+      tempTxt[i1] = item2.toString() + ",";
+      tempTxt[i2] = item1.toString() + ",";
+      temp[2] = " " + tempTxt.join("");
+      textRow.textContent = temp.join("|");
     } else if (button == "±" && this.stack.length >= 1) {
       let l = this.stack.length;
       if (isNaN(Number(this.stack[l - 1])) == false) {
         this.stack[l - 1] = -this.stack[l - 1];
       }
-      this.temp = -Number(this.temp);
       //locate and alter
       let subTxt = txt.join("").split(",");
       let tempTxt = subTxt;
-      console.log(subTxt, tempTxt, tempTxt.join("").split(""));
+      let index = subTxt.lastIndexOf((-this.stack[l - 1]).toString());
+      if (index == 0) tempTxt[index] = this.stack[l - 1].toString() + ",";
+      else tempTxt[index] = "," + this.stack[l - 1].toString() + ",";
+      let lE = tempTxt.length - 1;
+      if (this.stack[l - 1] < 0)
+        tempTxt[lE] = tempTxt[lE].substring(0, tempTxt[lE].length - 1);
+      else tempTxt[lE] = tempTxt[lE] + " ";
+      temp[2] = " " + tempTxt.join("");
+      textRow.textContent = temp.join("|");
     } else if (button == "!" && this.temp.length >= 1) {
       this.stack.push(Number(this.temp));
+      console.log(this.temp);
       this.temp = "";
       txt[txt.indexOf(" ")] = ",";
       temp[2] = " " + txt.join("");
       textRow.textContent = temp.join("|");
     }
-    // console.log(this.stack);
   }
 }
 let CALC = new Calculator(
