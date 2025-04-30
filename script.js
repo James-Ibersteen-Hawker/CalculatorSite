@@ -455,13 +455,14 @@ class Calculator {
     } else if (button == "Clr") {
       let subTxt = txt.join("").split(",");
       let tempTxt = subTxt;
-      let index = subTxt.lastIndexOf(this.stack[this.stack.length - 1]);
+      let index = subTxt.lastIndexOf(
+        this.stack[this.stack.length - 1].toString()
+      );
       this.stack.pop();
-      console.log(index);
-      console.log(tempTxt[index].length);
-      tempTxt[index] = " ".repeat();
+      tempTxt[index] = " ".repeat(tempTxt[index].length + 1);
       temp[2] = " " + tempTxt.join("");
       textRow.textContent = temp.join("|");
+      //find a way to replace the commas
     } else if (button == "<" && this.stack.length >= 2) {
       let l = this.stack.length;
       let temp1 = this.stack[l - 1];
