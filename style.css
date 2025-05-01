@@ -33,8 +33,7 @@ main {
   position: fixed;
   inset: 0;
   z-index: 2 !important;
-  /* background: url(overlay-1.gif); */
-  background: rgba(255,0,0,.2);
+  background: url(overlay-1.gif);
   background-size: 100% 100%;
   opacity: 0.035;
 }
@@ -125,19 +124,6 @@ p {
 .underscore {
   text-decoration: underline;
 }
-/*.box1topRow {
-  background: rgba(255, 0, 0, 0.8);
-} 
-.box2topRow {
-  background: rgba(0, 255, 0, 0.3);
-}
-.box3downRow {
-  background: rgba(0, 0, 255, 0.6);
-} */
 span[onclick^="btnFunction("] {
   transition: 0.25s;
 }
-/* .SPAN25.focus,
-.SPAN41.focus {
-  background: black !important;
-} */

@@ -3,6 +3,7 @@ const canvas = document.getElementById("canvas");
 let cursor = get("#cursor");
 let objs;
 let typeOffset = 0;
+let hlp = false;
 class Calculator {
   //what properties would a calculator have?
   buttons;
@@ -392,6 +393,16 @@ class Calculator {
         );
       }
     }
+    //line starts
+    {
+      let ps = Array.from(document.querySelectorAll("#calculator span"));
+      for (let i = 0; i < ps.length; i++) {
+        let txt = ps[i].innerHTML.split("");
+        txt[0] = ">";
+        txt[1] = ">";
+        ps[i].innerHTML = txt.join("");
+      }
+    }
     window.addEventListener("keydown", (event) => {
       switch (event.key) {
         case "Backspace":
@@ -420,6 +431,7 @@ class Calculator {
           break;
       }
     });
+    helpINP();
     buildSetup();
   }
   solve(button) {
@@ -603,12 +615,11 @@ let CALC = new Calculator(
 window.addEventListener("DOMContentLoaded", function () {
   let m1 = " JavaScript Terminal Calculator";
   type(m1, get("#text"));
-  begin();
   setTimeout(() => {
     get("#text").classList.remove("cursor");
     get("#begin").append(">>");
     get("#begin").classList.add("cursor");
-    type(" Type /begin to start", get("#begin"));
+    type(" Type /begin to start or /help for help", get("#begin"));
     setTimeout(() => {
       get("#textInput1").append(">> ");
       get("#begin").classList.remove("cursor");
@@ -628,9 +639,11 @@ window.addEventListener("DOMContentLoaded", function () {
             bx.textContent = inp.substring(0, inp.length - 1);
           if (event.key == "Enter")
             if ("/" + inp.substring(4).toLowerCase() == "/begin") begin();
+          if (event.key == "Enter" && hlp == false)
+            if ("/" + inp.substring(4).toLowerCase() == "/help") help();
         }
       });
-    }, " Type /begin to start".length * typeOffset + 1000);
+    }, " Type /begin to start or /help for help".length * typeOffset + 1000);
   }, m1.length * typeOffset + 1000);
 });
 function build() {
@@ -873,6 +886,10 @@ function type(arg, destination) {
 function begin() {
   get("#intro").classList.add("d-none");
   get("#textInput1").classList.add("d-none");
+  let helpP = Array.from(document.querySelectorAll(".pHelp"));
+  for (let i = 0; i < helpP.length; i++) {
+    helpP[i].classList.add("d-none");
+  }
   CALC.make();
 }
 function buildSetup() {
@@ -884,7 +901,6 @@ function buildSetup() {
         if (event.y >= c.tL.y && event.y <= c.bL.y) {
           // objs[i].e.classList.add(objs[i].cL);
           objs[i].e.classList.add("syncClick");
-          clickFocus(objs[i]);
           objs[i].inFunc();
         }
       }
@@ -945,29 +961,36 @@ function syncFocus(target) {
     }
   }
 }
-function clickFocus(target) {
-  // let classes = target.e.classList;
-  // let idef;
-  // for (let i = 0; i < classes.length; i++) {
-  //   if (classes[i].includes("box") && classes[i].includes("Row")) {
-  //     idef = classes[i];
-  //     break;
-  //   }
-  // }
-  // let btnBits = Array.from(document.querySelectorAll(`.${idef}`));
-  // let objCollection = [];
-  // for (let i = 0; i < objs.length; i++) {
-  //   for (let q = 0; q < btnBits.length; q++) {
-  //     if (objs[i].e == btnBits[q]) objCollection.push(objs[i]);
-  //   }
-  // }
-  // if (target.e.classList.contains("syncClick")) {
-  //   for (let i = 0; i < objCollection.length; i++) {
-  //     objCollection[i].e.classList.add(objCollection[i].cL);
-  //   }
-  // } else {
-  //   for (let i = 0; i < objCollection.length; i++) {
-  //     objCollection[i].e.classList.remove(objCollection[i].cL);
-  //   }
-  // }
+function help() {
+  hlp = true;
+  let messages = [
+    "This calculator uses Stack Arithmetic",
+    "Use the keys Enter, Backspace, +, *, ^, <, 1, and Alt to operate",
+    "Syntax: {op},{op},{func}",
+    "Syntax example: 1,1,+  =  2",
+    "Syntax example: 2,5,^  =  32",
+    "Clr (Backspace) deletes the last term",
+    "'<' switches the positions of the first two terms",
+    "Alt is a sign flip",
+    "Backspace out /help and type /begin to start",
+  ];
+  let cont = get("main");
+  for (let i = 0; i < messages.length; i++) {
+    let p = document.createElement("p");
+    p.textContent = ">> ";
+    p.id = `p${i}help`;
+    p.classList.add("pHelp");
+    cont.append(p);
+    cont.insertAdjacentHTML("beforeend", "<br>");
+  }
+  for (let i = 0; i < messages.length; i++) {
+    setTimeout(
+      () => {
+        type(messages[i], get(`#p${i}help`));
+      },
+      1000 * i,
+      cont,
+      messages[i]
+    );
+  }
 }
