@@ -2,7 +2,7 @@
 const canvas = document.getElementById("canvas");
 let cursor = get("#cursor");
 let objs;
-let typeOffset = 0;
+let typeOffset = 175;
 let hlp = false;
 class Calculator {
   //what properties would a calculator have?
@@ -431,7 +431,6 @@ class Calculator {
           break;
       }
     });
-    helpINP();
     buildSetup();
   }
   solve(button) {
