@@ -392,32 +392,62 @@ class Calculator {
         );
       }
     }
+    window.addEventListener("keydown", (event) => {
+      switch (event.key) {
+        case "Backspace":
+          this.btnPress(0);
+          break;
+        case "Enter":
+          this.btnPress(1);
+          break;
+        case "+":
+          this.btnPress(2);
+          break;
+        case "*":
+          this.btnPress(3);
+          break;
+        case "^":
+          this.btnPress(5);
+          break;
+        case "<":
+          this.btnPress(6);
+          break;
+        case "1":
+          this.btnPress(7);
+          break;
+        case "Alt":
+          this.btnPress(8);
+          break;
+      }
+    });
     buildSetup();
   }
   solve(button) {
-    if (this.stack.length < 2) alert("insufficient arguments");
-    else {
-      let operands = this.stack.slice(0, 2);
-      console.log(operands);
-      operands.forEach((elem) => {
-        elem = Number(elem);
-      });
+    let operand1 = this.stack[this.stack.length - 1];
+    let operand2 = this.stack[this.stack.length - 2];
+    if (!operand1 || !operand2) {
+      alert("inadequate arguments");
+      return;
+    } else {
       let result;
       switch (button) {
         case "+":
-          result = operands[0] + operands[1];
+          result = operand1 + operand2;
           break;
         case "*":
-          result = operands[0] * operands[1];
+          result = operand1 * operand2;
           break;
         case "^":
-          result = Math.pow(operands[0], operands[1]);
+          result = Math.pow(operand1, operand2);
           break;
       }
-      this.stack = [];
       this.stack.push(result);
-      this.temp = "";
-      return result;
+      let i1 = this.stack.lastIndexOf(operand1);
+      this.stack.splice(i1, 1);
+      let i2 = this.stack.lastIndexOf(operand2);
+      this.stack.splice(i2, 1);
+      console.log(this.stack);
+      return [operand1.toString(), operand2.toString(), result.toString()];
     }
   }
   btnPress(btn) {
@@ -432,18 +462,29 @@ class Calculator {
     this.maxChar = txt.length - 1;
     if (button != "Clr" && button != "<" && button != "±" && button != "!") {
       if (button != 1) {
-        let result = this.solve(button).toString() + ",";
-        result = result.split("");
-        let diff = txt.length - result.length;
-        txt = new Array(diff);
-        for (let i = 0; i < txt.length; i++) {
-          txt[i] = " ";
+        let [op1, op2, result] = this.solve(button);
+        let calcWindow = new Array(txt.length);
+        for (let i = 0; i < calcWindow.length; i++) {
+          if (this.stack[i]) {
+            calcWindow[i] = `${this.stack[i]},`;
+          }
         }
-        for (let i = 0; i < result.length; i++) {
-          txt.splice(0 + i, 0, result[i]);
-        }
-        console.log(txt);
-        temp[2] = " " + txt.join("");
+        calcWindow = calcWindow.join("").split("");
+        let diff = txt.length - calcWindow.length;
+        diff > 0
+          ? (() => {
+              //not enough
+              for (let i = 0; i < diff; i++) {
+                calcWindow.push(" ");
+              }
+            })()
+          : (() => {
+              //too many
+              for (let i = 0; i > diff; i--) {
+                calcWindow.pop();
+              }
+            })();
+        temp[2] = " " + calcWindow.join("");
         textRow.textContent = temp.join("|");
       } else {
         this.temp += button;
@@ -498,7 +539,6 @@ class Calculator {
       textRow.textContent = temp.join("|");
     } else if (button == "!" && this.temp.length >= 1) {
       this.stack.push(Number(this.temp));
-      console.log(this.temp);
       this.temp = "";
       txt[txt.indexOf(" ")] = ",";
       temp[2] = " " + txt.join("");
