@@ -438,14 +438,21 @@ class Calculator {
           result = operand1 * operand2;
           break;
         case "^":
-          result = Math.pow(operand1, operand2);
+          result = Math.pow(operand2, operand1);
           break;
       }
-      this.stack.push(result);
-      let i1 = this.stack.lastIndexOf(operand1);
-      this.stack.splice(i1, 1);
-      let i2 = this.stack.lastIndexOf(operand2);
-      this.stack.splice(i2, 1);
+      let str = this.stack.join(",");
+      str += `${result},`;
+      if (str.length > this.maxChar) {
+        alert("overflow error");
+        return;
+      } else {
+        this.stack.push(result);
+        let i1 = this.stack.lastIndexOf(operand1);
+        this.stack.splice(i1, 1);
+        let i2 = this.stack.lastIndexOf(operand2);
+        this.stack.splice(i2, 1);
+      }
     }
   }
   btnPress(btn) {
@@ -493,16 +500,30 @@ class Calculator {
         textRow.textContent = temp.join("|");
       }
     } else if (button == "Clr") {
-      let subTxt = txt.join("").split(",");
-      let tempTxt = subTxt;
-      let index = subTxt.lastIndexOf(
-        this.stack[this.stack.length - 1].toString()
-      );
       this.stack.pop();
-      tempTxt[index] = " ".repeat(tempTxt[index].length + 1);
-      temp[2] = " " + tempTxt.join("");
+      let calcWindow = new Array(txt.length);
+      for (let i = 0; i < calcWindow.length; i++) {
+        if (this.stack[i]) {
+          calcWindow[i] = `${this.stack[i]},`;
+        }
+      }
+      calcWindow = calcWindow.join("").split("");
+      let diff = txt.length - calcWindow.length;
+      diff > 0
+        ? (() => {
+            //not enough
+            for (let i = 0; i < diff; i++) {
+              calcWindow.push(" ");
+            }
+          })()
+        : (() => {
+            //too many
+            for (let i = 0; i > diff; i--) {
+              calcWindow.pop();
+            }
+          })();
+      temp[2] = " " + calcWindow.join("");
       textRow.textContent = temp.join("|");
-      //find a way to replace the commas
     } else if (button == "<" && this.stack.length >= 2) {
       let l = this.stack.length;
       let temp1 = this.stack[l - 1];
