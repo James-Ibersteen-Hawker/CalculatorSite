@@ -446,8 +446,6 @@ class Calculator {
       this.stack.splice(i1, 1);
       let i2 = this.stack.lastIndexOf(operand2);
       this.stack.splice(i2, 1);
-      console.log(this.stack);
-      return [operand1.toString(), operand2.toString(), result.toString()];
     }
   }
   btnPress(btn) {
@@ -462,7 +460,7 @@ class Calculator {
     this.maxChar = txt.length - 1;
     if (button != "Clr" && button != "<" && button != "±" && button != "!") {
       if (button != 1) {
-        let [op1, op2, result] = this.solve(button);
+        this.solve(button);
         let calcWindow = new Array(txt.length);
         for (let i = 0; i < calcWindow.length; i++) {
           if (this.stack[i]) {
@@ -510,15 +508,28 @@ class Calculator {
       let temp1 = this.stack[l - 1];
       this.stack[l - 1] = this.stack[l - 2];
       this.stack[l - 2] = temp1;
-      let item1 = this.stack[l - 1].toString();
-      let item2 = this.stack[l - 2].toString();
-      let subTxt = txt.join("").split(",");
-      let tempTxt = subTxt;
-      let i1 = subTxt.lastIndexOf(item1);
-      let i2 = subTxt.lastIndexOf(item2);
-      tempTxt[i1] = item2.toString() + ",";
-      tempTxt[i2] = item1.toString() + ",";
-      temp[2] = " " + tempTxt.join("");
+      let calcWindow = new Array(txt.length);
+      for (let i = 0; i < calcWindow.length; i++) {
+        if (this.stack[i]) {
+          calcWindow[i] = `${this.stack[i]},`;
+        }
+      }
+      calcWindow = calcWindow.join("").split("");
+      let diff = txt.length - calcWindow.length;
+      diff > 0
+        ? (() => {
+            //not enough
+            for (let i = 0; i < diff; i++) {
+              calcWindow.push(" ");
+            }
+          })()
+        : (() => {
+            //too many
+            for (let i = 0; i > diff; i--) {
+              calcWindow.pop();
+            }
+          })();
+      temp[2] = " " + calcWindow.join("");
       textRow.textContent = temp.join("|");
     } else if (button == "±" && this.stack.length >= 1) {
       let l = this.stack.length;
@@ -526,16 +537,28 @@ class Calculator {
         this.stack[l - 1] = -this.stack[l - 1];
       }
       //locate and alter
-      let subTxt = txt.join("").split(",");
-      let tempTxt = subTxt;
-      let index = subTxt.lastIndexOf((-this.stack[l - 1]).toString());
-      if (index == 0) tempTxt[index] = this.stack[l - 1].toString() + ",";
-      else tempTxt[index] = "," + this.stack[l - 1].toString() + ",";
-      let lE = tempTxt.length - 1;
-      if (this.stack[l - 1] < 0)
-        tempTxt[lE] = tempTxt[lE].substring(0, tempTxt[lE].length - 1);
-      else tempTxt[lE] = tempTxt[lE] + " ";
-      temp[2] = " " + tempTxt.join("");
+      let calcWindow = new Array(txt.length);
+      for (let i = 0; i < calcWindow.length; i++) {
+        if (this.stack[i]) {
+          calcWindow[i] = `${this.stack[i]},`;
+        }
+      }
+      calcWindow = calcWindow.join("").split("");
+      let diff = txt.length - calcWindow.length;
+      diff > 0
+        ? (() => {
+            //not enough
+            for (let i = 0; i < diff; i++) {
+              calcWindow.push(" ");
+            }
+          })()
+        : (() => {
+            //too many
+            for (let i = 0; i > diff; i--) {
+              calcWindow.pop();
+            }
+          })();
+      temp[2] = " " + calcWindow.join("");
       textRow.textContent = temp.join("|");
     } else if (button == "!" && this.temp.length >= 1) {
       this.stack.push(Number(this.temp));
