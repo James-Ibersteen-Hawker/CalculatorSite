@@ -35,7 +35,7 @@ class Calculator {
     this.inputNum = 0;
     this.stack = [];
     this.temp = "";
-    this.lock = false;
+    this.lock = true;
     this.queue = [];
   }
   make() {
@@ -435,25 +435,6 @@ class Calculator {
     });
     buildSetup();
   }
-  lockSolve(button) {
-    return new Promise((resolve) => {
-      this.queue.push(async () => {
-        this.lock = true;
-        await this.solve(button);
-        this.lock = false;
-        resolve();
-        this.runNext();
-      });
-      if (!this.isBusy) {
-        this.runNext();
-      }
-    });
-  }
-  runNext() {
-    if (this.queue.length === 0 || this.lock) return;
-    let next = this.queue.shift();
-    next();
-  }
   solve(button) {
     let operand1 = this.stack[this.stack.length - 1];
     let operand2 = this.stack[this.stack.length - 2];
@@ -485,6 +466,7 @@ class Calculator {
         let i2 = this.stack.lastIndexOf(operand2);
         this.stack.splice(i2, 1);
       }
+      this.lock = false;
     }
   }
   btnPress(btn) {
@@ -499,30 +481,33 @@ class Calculator {
     this.maxChar = txt.length - 1;
     if (button != "Clr" && button != "<" && button != "±" && button != "!") {
       if (button != 1) {
-        this.solve(button);
-        let calcWindow = new Array(txt.length);
-        for (let i = 0; i < calcWindow.length; i++) {
-          if (this.stack[i]) {
-            calcWindow[i] = `${this.stack[i]},`;
+        if (this.lock == true) {
+          this.solve(button);
+          let calcWindow = new Array(txt.length);
+          for (let i = 0; i < calcWindow.length; i++) {
+            if (this.stack[i]) {
+              calcWindow[i] = `${this.stack[i]},`;
+            }
           }
+          calcWindow = calcWindow.join("").split("");
+          let diff = txt.length - calcWindow.length;
+          diff > 0
+            ? (() => {
+                //not enough
+                for (let i = 0; i < diff; i++) {
+                  calcWindow.push(" ");
+                }
+              })()
+            : (() => {
+                //too many
+                for (let i = 0; i > diff; i--) {
+                  calcWindow.pop();
+                }
+              })();
+          temp[2] = " " + calcWindow.join("");
+          textRow.textContent = temp.join("|");
+          this.lock = true;
         }
-        calcWindow = calcWindow.join("").split("");
-        let diff = txt.length - calcWindow.length;
-        diff > 0
-          ? (() => {
-              //not enough
-              for (let i = 0; i < diff; i++) {
-                calcWindow.push(" ");
-              }
-            })()
-          : (() => {
-              //too many
-              for (let i = 0; i > diff; i--) {
-                calcWindow.pop();
-              }
-            })();
-        temp[2] = " " + calcWindow.join("");
-        textRow.textContent = temp.join("|");
       } else {
         this.temp += button;
         let index = txt.indexOf(" ");
