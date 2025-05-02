@@ -35,6 +35,8 @@ class Calculator {
     this.inputNum = 0;
     this.stack = [];
     this.temp = "";
+    this.lock = false;
+    this.queue = [];
   }
   make() {
     let cont = get("#calculator");
@@ -432,6 +434,25 @@ class Calculator {
       }
     });
     buildSetup();
+  }
+  lockSolve(button) {
+    return new Promise((resolve) => {
+      this.queue.push(async () => {
+        this.lock = true;
+        await this.solve(button);
+        this.lock = false;
+        resolve();
+        this.runNext();
+      });
+      if (!this.isBusy) {
+        this.runNext();
+      }
+    });
+  }
+  runNext() {
+    if (this.queue.length === 0 || this.lock) return;
+    let next = this.queue.shift();
+    next();
   }
   solve(button) {
     let operand1 = this.stack[this.stack.length - 1];
@@ -993,7 +1014,5 @@ function help() {
     );
   }
 }
-
-
 
 //the 1000th line
