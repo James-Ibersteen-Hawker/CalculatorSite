@@ -2,7 +2,7 @@
 const canvas = document.getElementById("canvas");
 let cursor = get("#cursor");
 let objs;
-let typeOffset = 0;
+let typeOffset = 20;
 let hlp = {
   setup: false,
   cursor: false,
@@ -971,15 +971,21 @@ function syncFocus(target) {
 function helpBuild() {
   let helpP = document.createElement("p");
   helpP.id = "helpDiv";
-  get("#calculator").insertAdjacentHTML("beforeend", "<p id='prehelp'>>> </p>");
+  get("#calculator").insertAdjacentHTML(
+    "beforeend",
+    "<p id='prehelp'>>> </p><br>"
+  );
   type("Type /help for help", get("#prehelp"));
   get("#prehelp").classList.add("cursor");
   setTimeout(
     () => {
-      get("#calculator").append(helpP);
+      let outerP = document.createElement("span");
+      outerP.id = "outerP";
+      get("#calculator").append(outerP);
+      get("#outerP").append(helpP);
       helpP = get("#helpDiv");
       helpP.textContent = ">> ";
-      helpP.setAttribute("onclick", "helpActivate()");
+      get("#outerP").setAttribute("onclick", "helpActivate()");
       get("#prehelp").classList.remove("cursor");
       buildSetup();
     },
@@ -987,7 +993,6 @@ function helpBuild() {
     helpP
   );
 }
-
 function helpActivate() {
   let div = get("#helpDiv");
   if (hlp.cursor == false) {

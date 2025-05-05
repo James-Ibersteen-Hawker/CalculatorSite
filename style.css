@@ -71,10 +71,6 @@ p {
   margin: 0;
   margin-bottom: -5px;
   padding-bottom: 0 !important;
-  background-color: yellow;
-}
-.cursor {
-  background-color: green !important;
 }
 .cursor::after {
   content: "";
@@ -97,10 +93,6 @@ p {
   100% {
     background-color: transparent;
   }
-}
-#calculator {
-  display: flex;
-  flex-direction: column;
 }
 #tB,
 #bB,
