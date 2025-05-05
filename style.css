@@ -71,14 +71,18 @@ p {
   margin: 0;
   margin-bottom: -5px;
   padding-bottom: 0 !important;
+  background-color: yellow;
+}
+.cursor {
+  background-color: green !important;
 }
 .cursor::after {
   content: "";
   background: black;
   position: absolute;
-  height: 2.1ex;
+  height: 2.4ex;
   width: 1.2ex;
-  top: 0;
+  top: 2px;
   right: -1.2ex;
   animation-name: blinking;
   animation-iteration-count: infinite;

@@ -2,8 +2,11 @@
 const canvas = document.getElementById("canvas");
 let cursor = get("#cursor");
 let objs;
-let typeOffset = 175;
-let hlp = false;
+let typeOffset = 0;
+let hlp = {
+  setup: false,
+  cursor: false,
+};
 class Calculator {
   //what properties would a calculator have?
   buttons;
@@ -433,6 +436,7 @@ class Calculator {
           break;
       }
     });
+    helpBuild();
     buildSetup();
   }
   solve(button) {
@@ -624,7 +628,7 @@ window.addEventListener("DOMContentLoaded", function () {
     get("#text").classList.remove("cursor");
     get("#begin").append(">>");
     get("#begin").classList.add("cursor");
-    type(" Type /begin to start or /help for help", get("#begin"));
+    type(" Type /begin to start", get("#begin"));
     setTimeout(() => {
       get("#textInput1").append(">> ");
       get("#begin").classList.remove("cursor");
@@ -644,11 +648,9 @@ window.addEventListener("DOMContentLoaded", function () {
             bx.textContent = inp.substring(0, inp.length - 1);
           if (event.key == "Enter")
             if ("/" + inp.substring(4).toLowerCase() == "/begin") begin();
-          if (event.key == "Enter" && hlp == false)
-            if ("/" + inp.substring(4).toLowerCase() == "/help") help();
         }
       });
-    }, " Type /begin to start or /help for help".length * typeOffset + 1000);
+    }, " Type /begin to start".length * typeOffset + 1000);
   }, m1.length * typeOffset + 1000);
 });
 function build() {
@@ -966,38 +968,45 @@ function syncFocus(target) {
     }
   }
 }
-function help() {
-  hlp = true;
-  let messages = [
-    "This calculator uses Stack Arithmetic",
-    "Use the keys Enter, Backspace, +, *, ^, <, 1, and Alt to operate",
-    "Syntax: {op},{op},{func}",
-    "Syntax example: 1,1,+  =  2",
-    "Syntax example: 2,5,^  =  32",
-    "Clr (Backspace) deletes the last term",
-    "'<' switches the positions of the first two terms",
-    "Alt is a sign flip",
-    "Backspace out /help and type /begin to start",
-  ];
-  let cont = get("main");
-  for (let i = 0; i < messages.length; i++) {
-    let p = document.createElement("p");
-    p.textContent = ">> ";
-    p.id = `p${i}help`;
-    p.classList.add("pHelp");
-    cont.append(p);
-    cont.insertAdjacentHTML("beforeend", "<br>");
-  }
-  for (let i = 0; i < messages.length; i++) {
-    setTimeout(
-      () => {
-        type(messages[i], get(`#p${i}help`));
-      },
-      1000 * i,
-      cont,
-      messages[i]
-    );
-  }
+function helpBuild() {
+  let helpP = document.createElement("p");
+  helpP.id = "helpDiv";
+  get("#calculator").insertAdjacentHTML("beforeend", "<p id='prehelp'>>> </p>");
+  type("Type /help for help", get("#prehelp"));
+  get("#prehelp").classList.add("cursor");
+  setTimeout(
+    () => {
+      get("#calculator").append(helpP);
+      helpP = get("#helpDiv");
+      helpP.textContent = ">> ";
+      helpP.setAttribute("onclick", "helpActivate()");
+      get("#prehelp").classList.remove("cursor");
+      buildSetup();
+    },
+    "Type /help for help".length * typeOffset + 1000,
+    helpP
+  );
 }
 
-//the 1000th line
+function helpActivate() {
+  let div = get("#helpDiv");
+  if (hlp.cursor == false) {
+    div.classList.add("cursor");
+    console.log(Array.from(div.classList));
+  }
+  if (hlp.setup == false) {
+    window.addEventListener("keydown", (event) => {
+      let key = event.key;
+      if (key == "Backspace") {
+        let txt = div.textContent.split("");
+        txt.splice(txt.length - 1, 1);
+        console.log(txt);
+      } else if (key.match(/[a-zA-Z]/)) {
+        if (key.length == 1) {
+          div.append(event.key);
+        }
+      }
+    });
+    hlp.setup = true;
+  }
+}
