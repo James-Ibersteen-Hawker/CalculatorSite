@@ -20,6 +20,9 @@ body {
   color: black;
   box-sizing: border-box;
 }
+html,body {
+  cursor: url(), auto;
+}
 main {
   display: block;
   position: absolute;
@@ -122,4 +125,11 @@ p {
 }
 span[onclick^="btnFunction("] {
   transition: 0.25s;
+}
+#outerP {
+  display: block;
+  width: 100%;
+}
+#helpDiv {
+  pointer-events: none;
 }

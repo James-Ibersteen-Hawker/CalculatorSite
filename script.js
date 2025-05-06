@@ -437,7 +437,6 @@ class Calculator {
       }
     });
     helpBuild();
-    buildSetup();
   }
   solve(button) {
     let operand1 = this.stack[this.stack.length - 1];
@@ -975,10 +974,11 @@ function helpBuild() {
     "beforeend",
     "<p id='prehelp'>>> </p><br>"
   );
-  type("Type /help for help", get("#prehelp"));
+  type("Click below and type /help for help", get("#prehelp"));
   get("#prehelp").classList.add("cursor");
   setTimeout(
     () => {
+      //<outerP onclick="helpActivate()"><helpP></helpP></outerP>
       let outerP = document.createElement("span");
       outerP.id = "outerP";
       get("#calculator").append(outerP);
@@ -989,12 +989,20 @@ function helpBuild() {
       get("#prehelp").classList.remove("cursor");
       buildSetup();
     },
-    "Type /help for help".length * typeOffset + 1000,
+    "Click below and type /help for help".length * typeOffset + 1000,
     helpP
   );
 }
 function helpActivate() {
   let div = get("#helpDiv");
+  alert(hlp.cursor);
+  if (hlp.cursor == false) {
+    div.classList.add("cursor");
+    hlp.cursor = true;
+  } else if (hlp.cursor == true) {
+    div.classList.remove("cursor");
+    hlp.cursor = false;
+  }
   if (hlp.cursor == false) {
     div.classList.add("cursor");
     console.log(Array.from(div.classList));
