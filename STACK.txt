@@ -1,0 +1,9 @@
+Stack Arithmetic uses the Stack Construct
+
+The Stack is a column of data in which "last in", "first out". 
+
+Every number is pushed onto the stack, and all operations operate on the top two terms
+
+The result replaces those terms
+
+1,1,+ = 2

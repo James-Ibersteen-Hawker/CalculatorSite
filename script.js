@@ -2,7 +2,7 @@
 const canvas = document.getElementById("canvas");
 let cursor = get("#cursor");
 let objs;
-let typeOffset = 20;
+let typeOffset = 185;
 let hlp = {
   setup: false,
   _type: false,
@@ -638,7 +638,7 @@ window.addEventListener("DOMContentLoaded", function () {
     get("#text").classList.remove("cursor");
     get("#begin").append(">>");
     get("#begin").classList.add("cursor");
-    type(" Type /begin to start", get("#begin"));
+    type(" Type /begin to start and press Enter", get("#begin"));
     setTimeout(() => {
       get("#textInput1").append(">> ");
       get("#begin").classList.remove("cursor");
@@ -660,7 +660,7 @@ window.addEventListener("DOMContentLoaded", function () {
             if ("/" + inp.substring(4).toLowerCase() == "/begin") begin();
         }
       });
-    }, " Type /begin to start".length * typeOffset + 1000);
+    }, " Type /begin to start and press Enter".length * typeOffset + 1000);
   }, m1.length * typeOffset + 1000);
 });
 function build() {
@@ -986,7 +986,7 @@ function helpBuild() {
     "beforeend",
     "<p id='prehelp'>>> </p><br>"
   );
-  type("Click below and type /help for help", get("#prehelp"));
+  type("Click below and type /help for help and press Enter", get("#prehelp"));
   get("#prehelp").classList.add("cursor");
   setTimeout(
     () => {
@@ -1001,7 +1001,8 @@ function helpBuild() {
       get("#prehelp").classList.remove("cursor");
       buildSetup();
     },
-    "Click below and type /help for help".length * typeOffset + 1000,
+    "Click below and type /help for help and press Enter".length * typeOffset +
+      1000,
     helpP
   );
 }
@@ -1014,7 +1015,7 @@ function helpActivate() {
         let key = event.key;
         if (key == "Enter" || key.textContent == ">> /help") {
           alert(
-            "///////HELP MENU///////\n\n  1. This calculator uses STACK ARITHMETIC, not CONVENTIONAL ARITHMETIC\n  2. STACK ARITHMETIC functions like this: ${op}${op}${func}\n  3. Examples: 1,1,+ = 2, 3,3,* = 9\n  4. The calculator is keyboard operated as well\n  5. Enter (the '!' button) must be pressed to confirm your inputted number, otherwise it will be wiped immediately\n  6. Clr clears most recent number \n  7. ± (Alt key) changes the number sign\n  8. < swaps the top two (most recent two) numbers of the equation\n  9. All other keys match their button\n  10. More examples: 1,1,1,++ = 3, 1,1,+1,1,+^ = 4\n  11. All operations are performed immediately after the operation is triggered, thus not needing parentheses"
+            "<-------HELP MENU------->\n\n  1. This calculator uses STACK ARITHMETIC, not CONVENTIONAL ARITHMETIC\n  2. STACK ARITHMETIC functions like this: number, number, operation\n  3. Examples: 1,1,+ = 2, 3,3,* = 9\n  4. The calculator is keyboard operated as well\n  5. Enter (the '!' button) must be pressed to confirm your inputted number, otherwise it will be wiped immediately\n  6. Clr clears most recent number \n  7. ± (Alt key) changes the number sign\n  8. < swaps the top two (most recent two) numbers of the equation\n  9. All other keys match their button\n  10. More examples: 1,1,1,++ = 3, 1,1,+1,1,+^ = 4\n  11. All operations are performed immediately after the operation is triggered, thus not needing parentheses"
           );
           hlp.type = false;
         } else if (key == "Backspace" && div.textContent != ">> ") {
