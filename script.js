@@ -5,7 +5,18 @@ let objs;
 let typeOffset = 20;
 let hlp = {
   setup: false,
-  cursor: false,
+  _type: false,
+  set type(bool) {
+    if (bool == false) {
+      get("#helpDiv").classList.remove("cursor");
+      get("#helpDiv").textContent = ">> ";
+    } else if (bool) get("#helpDiv").classList.add("cursor");
+
+    this._type = bool;
+  },
+  get type() {
+    return this._type;
+  },
 };
 class Calculator {
   //what properties would a calculator have?
@@ -805,6 +816,7 @@ function build() {
         } else {
           this.inFunc = function () {
             console.log("no function");
+            hlp.type = false;
           };
           this.hasFunc = false;
         }
@@ -995,37 +1007,25 @@ function helpBuild() {
 }
 function helpActivate() {
   let div = get("#helpDiv");
-  alert(hlp.cursor);
-  if (hlp.cursor == false) {
-    div.classList.add("cursor");
-    hlp.cursor = true;
-  } else if (hlp.cursor == true) {
-    div.classList.remove("cursor");
-    hlp.cursor = false;
-  }
-  if (hlp.cursor == false) {
-    div.classList.add("cursor");
-    console.log(Array.from(div.classList));
-  }
+  hlp.type ? (hlp.type = false) : (hlp.type = true);
   if (hlp.setup == false) {
     window.addEventListener("keydown", (event) => {
-      let key = event.key;
-      if (key == "Backspace") {
-        let txt = div.textContent.split("");
-        txt.splice(txt.length - 1, 1);
-        console.log(txt);
-      } else if (key.match(/[a-zA-Z]/)) {
-        if (key.length == 1) {
-          div.append(event.key);
+      if (hlp.type == true) {
+        let key = event.key;
+        if (key == "Enter" || key.textContent == ">> /help") {
+          alert(
+            "///////HELP MENU///////\n\n  1. This calculator uses STACK ARITHMETIC, not CONVENTIONAL ARITHMETIC\n  2. STACK ARITHMETIC functions like this: ${op}${op}${func}\n  3. Examples: 1,1,+ = 2, 3,3,* = 9\n  4. The calculator is keyboard operated as well\n  5. Enter (the '!' button) must be pressed to confirm your inputted number, otherwise it will be wiped immediately\n  6. Clr clears most recent number \n  7. ± (Alt key) changes the number sign\n  8. < swaps the top two (most recent two) numbers of the equation\n  9. All other keys match their button\n  10. More examples: 1,1,1,++ = 3, 1,1,+1,1,+^ = 4\n  11. All operations are performed immediately after the operation is triggered, thus not needing parentheses"
+          );
+          hlp.type = false;
+        } else if (key == "Backspace" && div.textContent != ">> ") {
+          let txt = div.textContent.split("");
+          txt.splice(txt.length - 1, 1);
+          div.textContent = txt.join("");
+        } else if (key.match(/[a-zA-Z]/) || key == "/") {
+          if (key.length == 1) div.append(event.key);
         }
       }
     });
     hlp.setup = true;
   }
 }
-
-/*function blahblahblah(param) {
-function subfunction() {
-STUFF
-}
-} */

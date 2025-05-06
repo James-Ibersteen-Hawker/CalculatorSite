@@ -22,7 +22,7 @@ body {
 }
 html,
 body {
-  cursor: url("cursor.png"), auto !important;
+  cursor: url("cursor-big.png"), auto !important;
 }
 main {
   display: block;
@@ -61,7 +61,7 @@ main {
   background: white;
 }
 .pointer {
-  cursor: pointer !important;
+  cursor: url("cursor-pointer-large.png"), pointer !important;
 }
 p {
   font-size: 3ex;
@@ -133,4 +133,8 @@ span[onclick^="btnFunction("] {
 }
 #helpDiv {
   pointer-events: none;
+}
+#calculator {
+  height: 100%;
+  width: 100%;
 }
