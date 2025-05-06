@@ -20,8 +20,9 @@ body {
   color: black;
   box-sizing: border-box;
 }
-html,body {
-  cursor: url(), auto;
+html,
+body {
+  cursor: url("cursor.png"), auto !important;
 }
 main {
   display: block;
