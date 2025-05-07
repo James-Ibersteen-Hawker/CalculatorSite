@@ -2,7 +2,7 @@
 const canvas = document.getElementById("canvas");
 let cursor = get("#cursor");
 let objs;
-let typeOffset = 0;
+const typeOffset = 0;
 let hlp = {
   setup: false,
   _type: false,
@@ -11,7 +11,6 @@ let hlp = {
       get("#helpDiv").classList.remove("cursor");
       get("#helpDiv").textContent = ">> ";
     } else if (bool) get("#helpDiv").classList.add("cursor");
-
     this._type = bool;
   },
   get type() {
@@ -19,7 +18,6 @@ let hlp = {
   },
 };
 class Calculator {
-  //what properties would a calculator have?
   buttons;
   width;
   minWidth;
@@ -53,28 +51,22 @@ class Calculator {
     this.queue = [];
   }
   make() {
-    let cont = get("#calculator");
-    let temp = document.createElement("span");
-    temp.setAttribute(
-      "style",
-      "display:block; font-size: 1ex; margin: 0; padding: 0;position: fixed;opacity: 0;"
+    const cont = get("#calculator");
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      "<span id='temp' style='display:block; font-size: 1ex; margin: 0; padding: 0;position: fixed;opacity: 0;'>x</span>"
     );
-    temp.textContent = "x";
-    temp.id = "temp";
-    document.body.append(temp);
-    let ex1 = get("#temp").offsetWidth;
-    let ex1H = get("#temp").offsetHeight;
+    const [ex1, ex1H] = [get("#temp").offsetWidth, get("#temp").offsetHeight];
+    get("#temp").remove();
     let xOffset;
     let wNum;
     let hNum;
     let inOffset;
     let endW;
     let wH;
-    get("#temp").remove();
     //topborder
     {
-      let topBorder = document.createElement("span");
-      topBorder.id = "tB";
+      let topBorder = create("span", "tB");
       cont.append(topBorder);
       let w = topBorder.offsetWidth;
       let nW = Math.round(w * this.width);
@@ -85,9 +77,7 @@ class Calculator {
       xOffset = aS1;
       wNum = amountP;
       for (let i = 0; i < aS1 + amountP; i++) {
-        if (i < aS1) {
-          get("#tB").append(" ");
-        } else get("#tB").append(".");
+        i < aS1 ? get("#tB").append(" ") : get("#tB").append(".");
       }
     }
     //sides
@@ -449,36 +439,29 @@ class Calculator {
     });
     helpBuild();
   }
-  solve(button) {
-    let operand1 = this.stack[this.stack.length - 1];
-    let operand2 = this.stack[this.stack.length - 2];
-    if (!operand1 || !operand2) {
-      alert("inadequate arguments");
-      return;
-    } else {
+  solve(button, l) {
+    let [op2, op1] = [this.stack[l - 1], this.stack[l - 2]];
+    if (!op1 || !op2) alert("inadequate arguments");
+    else {
       let result;
       switch (button) {
         case "+":
-          result = operand1 + operand2;
+          result = op1 + op2;
           break;
         case "*":
-          result = operand1 * operand2;
+          result = op1 * op2;
           break;
         case "^":
-          result = Math.pow(operand2, operand1);
+          result = Math.pow(op1, op2);
           break;
       }
       let str = this.stack.join(",");
       str += `${result},`;
-      if (str.length > this.maxChar) {
-        alert("overflow error");
-        return;
-      } else {
+      if (str.length > this.maxChar) alert("overflow error");
+      else {
         this.stack.push(result);
-        let i1 = this.stack.lastIndexOf(operand1);
-        this.stack.splice(i1, 1);
-        let i2 = this.stack.lastIndexOf(operand2);
-        this.stack.splice(i2, 1);
+        this.stack.splice(this.stack.lastIndexOf(op1), 1);
+        this.stack.splice(this.stack.lastIndexOf(op2), 1);
       }
       this.lock = false;
     }
@@ -495,6 +478,7 @@ class Calculator {
     switch (button) {
       case "Clr":
         this.stack.pop();
+        this.temp = "";
         this.drawStack(txt, temp, textRow);
         break;
       case "<":
@@ -528,7 +512,7 @@ class Calculator {
         break;
       default:
         if (!this.lock) break;
-        this.solve(button);
+        this.solve(button, l);
         this.drawStack(txt, temp, textRow);
         this.lock = true;
         break;
@@ -537,6 +521,7 @@ class Calculator {
   drawStack(txt, temp, textRow) {
     let calcWindow = new Array(txt.length);
     calcWindow[0] = this.stack.join(",") + ",";
+    if (this.stack.length < 1) calcWindow[0] = "";
     calcWindow = calcWindow.join("").split("");
     let diff = txt.length - calcWindow.length;
     if (diff > 0) calcWindow.push(...Array(diff).fill(" "));
@@ -587,6 +572,15 @@ window.addEventListener("DOMContentLoaded", function () {
     }, " Type /begin to start and press Enter".length * typeOffset + 1000);
   }, m1.length * typeOffset + 1000);
 });
+function get(arg) {
+  return document.querySelector(arg);
+}
+function create(tag, id = "", ...cls) {
+  const e = document.createElement(tag);
+  e.id = id;
+  cls.length > 0 ? e.classList.add(...cls) : (e.className = "");
+  return e;
+}
 function build() {
   objs = Array.from(get("main").querySelectorAll("*"));
   objs.splice(objs.indexOf(canvas), 1);
@@ -808,9 +802,6 @@ function visualDivide() {
 }
 function btnFunction(selector) {
   CALC.btnPress(selector);
-}
-function get(arg) {
-  return document.querySelector(arg);
 }
 function type(arg, destination) {
   arg = arg.split("");
