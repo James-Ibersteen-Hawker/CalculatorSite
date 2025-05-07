@@ -2,7 +2,7 @@
 const canvas = document.getElementById("canvas");
 let cursor = get("#cursor");
 let objs;
-let typeOffset = 185;
+let typeOffset = 0;
 let hlp = {
   setup: false,
   _type: false,
@@ -484,141 +484,65 @@ class Calculator {
     }
   }
   btnPress(btn) {
-    let button = this.buttons[btn];
-    let display = Array.from(document.querySelectorAll(".windowBox"));
-    let textRow = display[Math.round(display.length / 2) - 1];
+    const button = this.buttons[btn];
+    const display = Array.from(document.querySelectorAll(".windowBox"));
+    const textRow = display[Math.round(display.length / 2) - 1];
     if (display.length == 1) textRow = display[0];
-    let txt = textRow.textContent.split("|");
-    let temp = txt;
-    txt = txt[2];
-    txt = txt.split("").slice(1);
+    let temp = textRow.textContent.split("|");
+    let txt = temp[2].split("").slice(1);
+    let l = this.stack.length;
     this.maxChar = txt.length - 1;
-    if (button != "Clr" && button != "<" && button != "±" && button != "!") {
-      if (button != 1) {
-        if (this.lock == true) {
-          this.solve(button);
-          let calcWindow = new Array(txt.length);
-          for (let i = 0; i < calcWindow.length; i++) {
-            if (this.stack[i]) {
-              calcWindow[i] = `${this.stack[i]},`;
-            }
-          }
-          calcWindow = calcWindow.join("").split("");
-          let diff = txt.length - calcWindow.length;
-          diff > 0
-            ? (() => {
-                //not enough
-                for (let i = 0; i < diff; i++) {
-                  calcWindow.push(" ");
-                }
-              })()
-            : (() => {
-                //too many
-                for (let i = 0; i > diff; i--) {
-                  calcWindow.pop();
-                }
-              })();
-          temp[2] = " " + calcWindow.join("");
-          textRow.textContent = temp.join("|");
-          this.lock = true;
-        }
-      } else {
-        this.temp += button;
-        let index = txt.indexOf(" ");
-        txt[index] = button;
+    switch (button) {
+      case "Clr":
+        this.stack.pop();
+        this.drawStack(txt, temp, textRow);
+        break;
+      case "<":
+        if (l < 2) break;
+        [this.stack[l - 2], this.stack[l - 1]] = [
+          this.stack[l - 1],
+          this.stack[l - 2],
+        ];
+        this.drawStack(txt, temp, textRow);
+        break;
+      case "±":
+        if (l < 1) break;
+        if (!isNaN(Number(this.stack[l - 1])))
+          this.stack[l - 1] = -this.stack[l - 1];
+        this.drawStack(txt, temp, textRow);
+        break;
+      case "!":
+        if (this.temp.length < 1) break;
+        this.stack.push(Number(this.temp));
+        if (this.temp == "0") alert(this.temp);
+        this.temp = "";
+        this.drawStack(txt, temp, textRow);
+        break;
+      case "1":
+        this.temp += "1";
+        let i = txt.indexOf(" ");
+        txt[i] = "1";
         this.inputNum++;
         temp[2] = " " + txt.join("");
         textRow.textContent = temp.join("|");
-      }
-    } else if (button == "Clr") {
-      this.stack.pop();
-      let calcWindow = new Array(txt.length);
-      for (let i = 0; i < calcWindow.length; i++) {
-        if (this.stack[i]) {
-          calcWindow[i] = `${this.stack[i]},`;
-        }
-      }
-      calcWindow = calcWindow.join("").split("");
-      let diff = txt.length - calcWindow.length;
-      diff > 0
-        ? (() => {
-            //not enough
-            for (let i = 0; i < diff; i++) {
-              calcWindow.push(" ");
-            }
-          })()
-        : (() => {
-            //too many
-            for (let i = 0; i > diff; i--) {
-              calcWindow.pop();
-            }
-          })();
-      temp[2] = " " + calcWindow.join("");
-      textRow.textContent = temp.join("|");
-    } else if (button == "<" && this.stack.length >= 2) {
-      let l = this.stack.length;
-      let temp1 = this.stack[l - 1];
-      this.stack[l - 1] = this.stack[l - 2];
-      this.stack[l - 2] = temp1;
-      let calcWindow = new Array(txt.length);
-      for (let i = 0; i < calcWindow.length; i++) {
-        if (this.stack[i]) {
-          calcWindow[i] = `${this.stack[i]},`;
-        }
-      }
-      calcWindow = calcWindow.join("").split("");
-      let diff = txt.length - calcWindow.length;
-      diff > 0
-        ? (() => {
-            //not enough
-            for (let i = 0; i < diff; i++) {
-              calcWindow.push(" ");
-            }
-          })()
-        : (() => {
-            //too many
-            for (let i = 0; i > diff; i--) {
-              calcWindow.pop();
-            }
-          })();
-      temp[2] = " " + calcWindow.join("");
-      textRow.textContent = temp.join("|");
-    } else if (button == "±" && this.stack.length >= 1) {
-      let l = this.stack.length;
-      if (isNaN(Number(this.stack[l - 1])) == false) {
-        this.stack[l - 1] = -this.stack[l - 1];
-      }
-      //locate and alter
-      let calcWindow = new Array(txt.length);
-      for (let i = 0; i < calcWindow.length; i++) {
-        if (this.stack[i]) {
-          calcWindow[i] = `${this.stack[i]},`;
-        }
-      }
-      calcWindow = calcWindow.join("").split("");
-      let diff = txt.length - calcWindow.length;
-      diff > 0
-        ? (() => {
-            //not enough
-            for (let i = 0; i < diff; i++) {
-              calcWindow.push(" ");
-            }
-          })()
-        : (() => {
-            //too many
-            for (let i = 0; i > diff; i--) {
-              calcWindow.pop();
-            }
-          })();
-      temp[2] = " " + calcWindow.join("");
-      textRow.textContent = temp.join("|");
-    } else if (button == "!" && this.temp.length >= 1) {
-      this.stack.push(Number(this.temp));
-      this.temp = "";
-      txt[txt.indexOf(" ")] = ",";
-      temp[2] = " " + txt.join("");
-      textRow.textContent = temp.join("|");
+        break;
+      default:
+        if (!this.lock) break;
+        this.solve(button);
+        this.drawStack(txt, temp, textRow);
+        this.lock = true;
+        break;
     }
+  }
+  drawStack(txt, temp, textRow) {
+    let calcWindow = new Array(txt.length);
+    calcWindow[0] = this.stack.join(",") + ",";
+    calcWindow = calcWindow.join("").split("");
+    let diff = txt.length - calcWindow.length;
+    if (diff > 0) calcWindow.push(...Array(diff).fill(" "));
+    else calcWindow -= -diff;
+    temp[2] = " " + calcWindow.join("");
+    textRow.textContent = temp.join("|");
   }
 }
 let CALC = new Calculator(
