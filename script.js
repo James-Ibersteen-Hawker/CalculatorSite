@@ -776,22 +776,22 @@ function begin() {
 function buildSetup() {
   build();
   canvas.addEventListener("mousedown", (event) => {
-    for (let i = 0; i < objs.length; i++) {
-      let c = objs[i].tBounds;
+    objs.forEach((elem) => {
+      let c = elem.tBounds;
       if (event.x >= c.tL.x && event.x <= c.tR.x) {
         if (event.y >= c.tL.y && event.y <= c.bL.y) {
-          // objs[i].e.classList.add(objs[i].cL);
-          objs[i].e.classList.add("syncClick");
-          objs[i].inFunc();
+          elem.e.classList.add(elem.cL);
+          elem.e.classList.add("syncClick");
+          elem.inFunc();
         }
       }
-    }
+    });
   });
   canvas.addEventListener("mouseup", () => {
-    for (let i = 0; i < objs.length; i++) {
-      if (objs[i].e.classList.contains(objs[i].cL))
-        objs[i].e.classList.remove(objs[i].cL);
-    }
+    objs.forEach((elem) => {
+      if (elem.e.classList.contains(objs[i].cL))
+        elem.e.classList.remove(objs[i].cL);
+    });
   });
   canvas.addEventListener("mousemove", (event) => {
     for (let i = 0; i < objs.length; i++) {
