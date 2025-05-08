@@ -52,30 +52,26 @@ class Calculator {
   }
   make() {
     const cont = get("#calculator");
+    let xOffset, wNum, hNum, inOffset, endW, wH;
     document.body.insertAdjacentHTML(
       "beforeend",
       "<span id='temp' style='display:block; font-size: 1ex; margin: 0; padding: 0;position: fixed;opacity: 0;'>x</span>"
     );
-    const [ex1, ex1H] = [get("#temp").offsetWidth, get("#temp").offsetHeight];
+    const [ex1, ex1H] = [
+      get("#temp").offsetWidth * 3,
+      get("#temp").offsetHeight * 3,
+    ];
     get("#temp").remove();
-    let xOffset;
-    let wNum;
-    let hNum;
-    let inOffset;
-    let endW;
-    let wH;
     //topborder
     {
-      let topBorder = create("span", "tB");
-      cont.append(topBorder);
-      let w = topBorder.offsetWidth;
-      let nW = Math.round(w * this.width);
-      if (nW < this.minWidth) nW = this.minWidth;
+      const tB = create("span", "tB");
+      cont.append(tB);
+      let w = tB.offsetWidth;
+      let nW = Math.max(Math.round(w * this.width, this.minWidth));
       let split = Math.floor((w - nW) / 2);
-      let aS1 = Math.round(split / (ex1 * 3));
-      let amountP = Math.round(nW / (ex1 * 3));
-      xOffset = aS1;
-      wNum = amountP;
+      let aS1 = Math.round(split / ex1);
+      let amountP = Math.round(nW / ex1);
+      (xOffset = aS1), (wNum = amountP);
       for (let i = 0; i < aS1 + amountP; i++) {
         i < aS1 ? get("#tB").append(" ") : get("#tB").append(".");
       }
@@ -84,7 +80,7 @@ class Calculator {
     {
       let nH = Math.round(window.innerHeight * this.height);
       if (nH < this.minHeight) nH = this.minHeight;
-      let amountV = Math.round(nH / (ex1H * 3)) - 3;
+      let amountV = Math.round(nH / ex1H) - 3;
       hNum = amountV;
       for (let i = 0; i < amountV; i++) {
         let row = document.createElement("span");
@@ -105,9 +101,7 @@ class Calculator {
       bottomBorder.id = "bB";
       cont.append(bottomBorder);
       for (let i = 0; i < xOffset + wNum; i++) {
-        if (i < xOffset) {
-          get("#bB").append(" ");
-        } else get("#bB").append(".");
+        i < xOffset ? get("#bB").append(" ") : get("#bB").append(".");
       }
     }
     //textWindow
@@ -124,7 +118,7 @@ class Calculator {
         if (i == wOffset + w - 1) top.splice(i, 0, "</span>");
       }
       get("#sB0").innerHTML = top.join("");
-      let h = Math.round(hNum / (this.wHeight / (ex1H * 3)));
+      let h = Math.round(hNum / (this.wHeight / ex1H));
       wH = h;
       let inters = [];
       for (let i = 1; i < h; i++) {
@@ -707,7 +701,7 @@ function build() {
         background: ${(() => {
           const d = 50;
           const sTemp = temp[i].hBg;
-          let [r, g, b, a] = [sTemp[0], sTemp[1], sTemp[2], sTemp[3]];
+          let [r, g, b, a] = sTemp;
           if (sTemp.length == 4) {
             r - d < 0 ? (r = 0) : (r = r - d);
             g - d < 0 ? (g = 0) : (g = g - d);
@@ -780,17 +774,9 @@ function buildSetup() {
       let c = elem.tBounds;
       if (event.x >= c.tL.x && event.x <= c.tR.x) {
         if (event.y >= c.tL.y && event.y <= c.bL.y) {
-          elem.e.classList.add(elem.cL);
-          elem.e.classList.add("syncClick");
           elem.inFunc();
         }
       }
-    });
-  });
-  canvas.addEventListener("mouseup", () => {
-    objs.forEach((elem) => {
-      if (elem.e.classList.contains(objs[i].cL))
-        elem.e.classList.remove(objs[i].cL);
     });
   });
   canvas.addEventListener("mousemove", (event) => {
