@@ -655,76 +655,34 @@ function build() {
       bg: (() => {
         let cClass = Array.from(objs[i].classList);
         let color = [];
-        for (let i = 0; i < cClass.length; i++) {
-          if (cClass[i].indexOf("c") == 0) {
-            let t = cClass[i].split("-");
+        cClass.forEach((Class) => {
+          if (Class.indexOf("c") == 0 && Class != "cursor") {
+            let t = Class.split("-");
             t[0] = t[0].substring(1);
-            for (let x = 0; x < t.length; x++) {
-              if (t[x].length == 3) {
-                if (isNaN(Number(t[x])) == false) {
-                  color.push(t[x]);
-                }
-              } else if ((x = t.length - 1)) color.push(t[x]);
-            }
+            t.forEach((elem, i, arr) => {
+              if (elem.length == 3 && !isNaN(Number(elem))) color.push(elem);
+              else if ((i = arr.length - 1)) color.push(elem);
+            });
           }
-        }
+        });
         return color;
       })(),
       hBg: (() => {
         let hClass = Array.from(objs[i].classList);
         let color = [];
-        for (let i = 0; i < hClass.length; i++) {
-          if (hClass[i].indexOf("h") == 0) {
-            let t = hClass[i].split("-");
+        hClass.forEach((Class) => {
+          if (Class.indexOf("h") == 0) {
+            let t = Class.split("-");
             t[0] = t[0].substring(1);
-            for (let x = 0; x < t.length; x++) {
-              if (t[x].length == 3) {
-                if (isNaN(Number(t[x])) == false) {
-                  color.push(t[x]);
-                }
-              } else if ((x = t.length - 1)) color.push(t[x]);
-            }
+            t.forEach((elem, i, arr) => {
+              if (elem.length == 3 && !isNaN(Number(elem))) color.push(elem);
+              else if ((i = arr.length - 1)) color.push(elem);
+            });
           }
-        }
+        });
         return color;
       })(),
       init: function () {
-        this.bg = (() => {
-          let cClass = Array.from(this.e.classList);
-          let color = [];
-          for (let i = 0; i < cClass.length; i++) {
-            if (cClass[i].indexOf("c") == 0) {
-              let t = cClass[i].split("-");
-              t[0] = t[0].substring(1);
-              for (let x = 0; x < t.length; x++) {
-                if (t[x].length == 3) {
-                  if (isNaN(Number(t[x])) == false) {
-                    color.push(t[x]);
-                  }
-                } else if ((x = t.length - 1)) color.push(t[x]);
-              }
-            }
-          }
-          return color;
-        })();
-        this.hBg = (() => {
-          let hClass = Array.from(this.e.classList);
-          let color = [];
-          for (let i = 0; i < hClass.length; i++) {
-            if (hClass[i].indexOf("h") == 0) {
-              let t = hClass[i].split("-");
-              t[0] = t[0].substring(1);
-              for (let x = 0; x < t.length; x++) {
-                if (t[x].length == 3) {
-                  if (isNaN(Number(t[x])) == false) {
-                    color.push(t[x]);
-                  }
-                } else if ((x = t.length - 1)) color.push(t[x]);
-              }
-            }
-          }
-          return color;
-        })();
         this.e.setAttribute("style", `background: rgba(${this.bg.join(",")})`);
         if (this.e.getAttribute("onclick")) {
           this.inFunc = function () {
@@ -733,45 +691,35 @@ function build() {
           this.hasFunc = true;
         } else {
           this.inFunc = function () {
-            console.log("no function");
             hlp.type = false;
           };
           this.hasFunc = false;
         }
       },
     };
-    let style = document.createElement("style");
+    const style = create("style", `_${objs[i].tagName}${i}`);
     temp[i].cL = `${objs[i].tagName}${i}_click`;
     temp[i].name = `${objs[i].tagName}${i}`;
     temp[i].e.classList.add(temp[i].name);
     temp[i].e.setAttribute("data-idef", temp[i].name);
     style.append(`
       .${temp[i].name}_click {
-      background: ${(() => {
-        let d = 50;
-        let stylTemp = temp[i].hBg;
-        let r = stylTemp[0];
-        let g = stylTemp[1];
-        let b = stylTemp[2];
-        let a = stylTemp[3];
-        let compile;
-        if (stylTemp.length == 4) {
-          if (r - d < 0) r = 0;
-          else r = r - d;
-          if (g - d < 0) g = 0;
-          else g = g - d;
-          if (b - d < 0) b = 0;
-          else b = b - d;
-          compile = `rgba(${r},${g},${b}, ${a})`;
-          return compile;
-        }
-      })()} !important;
+        background: ${(() => {
+          const d = 50;
+          const sTemp = temp[i].hBg;
+          let [r, g, b, a] = [sTemp[0], sTemp[1], sTemp[2], sTemp[3]];
+          if (sTemp.length == 4) {
+            r - d < 0 ? (r = 0) : (r = r - d);
+            g - d < 0 ? (g = 0) : (g = g - d);
+            b - d < 0 ? (b = 0) : (b = b - d);
+            return `rgba(${r},${g},${b}, ${a})`;
           }
+        })()} !important;
+      }
       .${temp[i].name}.focus {
-      background: rgba(${temp[i].hBg.join(",")});
+        background: rgba(${temp[i].hBg.join(",")});
       }
     `);
-    style.id = `_${objs[i].tagName}${i}`;
     document.head.append(style);
   }
   objs = temp;
