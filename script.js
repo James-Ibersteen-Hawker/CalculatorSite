@@ -68,8 +68,7 @@ class Calculator {
       cont.append(tB);
       let w = tB.offsetWidth;
       let nW = Math.max(Math.round(w * this.width, this.minWidth));
-      let split = Math.floor((w - nW) / 2);
-      let aS1 = Math.round(split / ex1);
+      let aS1 = Math.round(Math.floor((w - nW) / 2) / ex1);
       let amountP = Math.round(nW / ex1);
       (xOffset = aS1), (wNum = amountP);
       for (let i = 0; i < aS1 + amountP; i++) {
@@ -78,16 +77,16 @@ class Calculator {
     }
     //sides
     {
-      let nH = Math.round(window.innerHeight * this.height);
-      if (nH < this.minHeight) nH = this.minHeight;
+      let nH = Math.max(
+        Math.round(window.innerHeight * this.height),
+        this.minHeight
+      );
       let amountV = Math.round(nH / ex1H) - 3;
       hNum = amountV;
       for (let i = 0; i < amountV; i++) {
-        let row = document.createElement("span");
-        row.id = `sB${i}`;
+        let row = create("span", `sB${i}`, "sideRow");
         cont.append(row);
         row = get(`#sB${i}`);
-        row.classList.add("sideRow");
         for (let q = 0; q < xOffset + wNum; q++) {
           if (q == xOffset || q == xOffset + wNum - 1) row.append("|");
           else if (q > xOffset && q < xOffset + wNum) row.append("#");
@@ -97,9 +96,8 @@ class Calculator {
     }
     //bottombottomborder
     {
-      let bottomBorder = document.createElement("span");
-      bottomBorder.id = "bB";
-      cont.append(bottomBorder);
+      let bB = create("span", "bB");
+      cont.append(bB);
       for (let i = 0; i < xOffset + wNum; i++) {
         i < xOffset ? get("#bB").append(" ") : get("#bB").append(".");
       }
@@ -109,7 +107,6 @@ class Calculator {
       //top of window
       let w = Math.round(wNum * this.wWidth);
       let rW = Math.round((wNum - w) / 2);
-      inOffset = rW;
       let top = get("#sB0").textContent.split("");
       let wOffset = xOffset + rW;
       let t = wOffset + w;
@@ -119,12 +116,13 @@ class Calculator {
       }
       get("#sB0").innerHTML = top.join("");
       let h = Math.round(hNum / (this.wHeight / ex1H));
-      wH = h;
-      let inters = [];
-      for (let i = 1; i < h; i++) {
-        inters.push(get(`#sB${i}`));
-        get(`#sB${i}`).classList.add("windowBox");
-      }
+      (inOffset = rW), (wH = h);
+      let inters = Array.from({ length: h - 1 }, (v, i) => {
+        return get(`#sB${i + 1}`);
+      });
+      inters.forEach((e) => {
+        e.classList.add("windowBox");
+      });
       endW = inters.length + 1;
       for (let i = 0; i < inters.length; i++) {
         let current = inters[i].textContent.split("");
@@ -576,6 +574,7 @@ function create(tag, id = "", ...cls) {
   return e;
 }
 function build() {
+  objs = [];
   objs = Array.from(get("main").querySelectorAll("*"));
   objs.splice(objs.indexOf(canvas), 1);
   for (let i = 0; i < objs.length; i++) {
